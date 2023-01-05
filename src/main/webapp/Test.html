@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>  
+<head>  
+<script>  
+var request;  
+function sendInfo()  
+{  
+	var v = document.vinform.t1.value;  
+	//var url="index.jsp?val="+v;  
+	var url = "XmlFetchingParsing";
+	  
+	if(window.XMLHttpRequest){  
+		request = new XMLHttpRequest();  
+	}  
+	else if(window.ActiveXObject){  
+		request = new ActiveXObject("Microsoft.XMLHTTP");  
+	}  
+	  
+	try  
+	{  
+		request.onreadystatechange  = getServerResponse;  
+		request.open("GET", url, true);  
+		request.send();  
+	}  
+	catch(e)  
+	{  
+		alert("Unable to connect to server");  
+	}  
+}  
+  
+function getServerResponse(){  
+	if (request.readyState == 4) {  
+		var val = request.responseText;  
+		document.getElementById('amit').innerHTML = val;  
+	}  
+}  
+
+
+function showRoute(tag)  
+{  
+	alert("calling showRoute");
+	var v = document.vinform.t1.value;  
+	var url = "GetRoutes?tag=" + tag;
+	
+	if (window.XMLHttpRequest) {  
+		request = new XMLHttpRequest();  
+	}  
+	else if (window.ActiveXObject) {  
+		request = new ActiveXObject("Microsoft.XMLHTTP");  
+	}  
+	  
+	try  
+	{  
+		request.onreadystatechange  = getServerResponse;  
+		request.open("GET", url, true);  
+		request.send();
+	}  
+	catch(e)  
+	{  
+		alert("Unable to connect to server");  
+	}  
+}  
+
+function getRouteInfo() {  
+	if(request.readyState == 4){  
+		var val = request.responseText;  
+		document.getElementById('amit').innerHTML = val;  
+	}  
+}  
+
+  
+</script>  
+</head>  
+<body>  
+    <marquee><h1>This is an example of ajax</h1></marquee>  
+<form name="vinform">  
+<input type="text" name="t1">  
+<input type="button" value="ShowTable" onClick="sendInfo()">  
+</form>  
+  
+<Table>
+<TR>
+<TD>
+<span id="amit"> </span>  
+</TD>
+</TR>
+</Table>
+
+
+
+  
+</body>  
+</html>  
