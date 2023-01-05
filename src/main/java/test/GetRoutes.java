@@ -37,9 +37,19 @@ public class GetRoutes extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		String tag = request.getParameter("tag");
 		
+		out.print("<table>");  //start table
+		out.print("<TR>");
+			out.print("<TD>");
+			out.print("Route Title");
+			out.print("</TD>");
+			out.print("<TD>");
+			out.print("Tag");
+			out.print("</TD>");
+		out.print("</TR>");
+		
 		try {
 			//gets inputStream from URL
-			URL url = new URL("https://retro.umoiq.com/service/publicXMLFeed?command=agencyList");
+			URL url = new URL("https://retro.umoiq.com/service/publicXMLFeed?command=routeList&a=" + tag);
 			InputStream stream = url.openStream();
 			
 			//StaxParser Setup
@@ -47,15 +57,31 @@ public class GetRoutes extends HttpServlet {
 			XMLEventReader reader = xmlInputFactory.createXMLEventReader(stream);
 			
 			while (reader.hasNext()) {
-				
+				System.out.println("yes");
 				XMLEvent nextEvent = reader.nextEvent();
 				if (nextEvent.isStartElement()) {
+					out.print("<TR>");
+					StartElement startElm = nextEvent.asStartElement();
+					//if element is not a route, then skip
+					if (!startElm.getName().getLocalPart().equals("route")) {
+						continue;
+					}
 					
+					String routeTag = startElm.getAttributeByName(new QName("tag")).getValue();
+					String title = startElm.getAttributeByName(new QName("title")).getValue();
+					
+					out.print("<TD>" + title + "</TD> <TD>" + routeTag + "</TD>");
+
+					out.print("</TR>");
 				}
 			}
+			
+			
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		out.print("</table>");//end table
 	}
 }
