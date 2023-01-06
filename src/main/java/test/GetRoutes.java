@@ -35,7 +35,7 @@ public class GetRoutes extends HttpServlet {
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter out = response.getWriter();
-		String tag = request.getParameter("tag");
+		String agencyTag = request.getParameter("agencyTag");
 		
 		out.print("<table>");  //start table
 		out.print("<TR>");
@@ -45,11 +45,14 @@ public class GetRoutes extends HttpServlet {
 			out.print("<TD>");
 			out.print("Tag");
 			out.print("</TD>");
+			out.print("<TD>");
+			out.print("Show Route Config");
+			out.print("</TD>");
 		out.print("</TR>");
 		
 		try {
 			//gets inputStream from URL
-			URL url = new URL("https://retro.umoiq.com/service/publicXMLFeed?command=routeList&a=" + tag);
+			URL url = new URL("https://retro.umoiq.com/service/publicXMLFeed?command=routeList&a=" + agencyTag);
 			InputStream stream = url.openStream();
 			
 			//StaxParser Setup
@@ -57,7 +60,6 @@ public class GetRoutes extends HttpServlet {
 			XMLEventReader reader = xmlInputFactory.createXMLEventReader(stream);
 			
 			while (reader.hasNext()) {
-				System.out.println("yes");
 				XMLEvent nextEvent = reader.nextEvent();
 				if (nextEvent.isStartElement()) {
 					out.print("<TR>");
@@ -71,6 +73,7 @@ public class GetRoutes extends HttpServlet {
 					String title = startElm.getAttributeByName(new QName("title")).getValue();
 					
 					out.print("<TD>" + title + "</TD> <TD>" + routeTag + "</TD>");
+					out.print("<TD><input type=\"button\" value=\"ShowRouteConfig\" onClick=\"showRouteConfig('" + agencyTag + "', '" + routeTag + "')\"></TD>");
 
 					out.print("</TR>");
 				}

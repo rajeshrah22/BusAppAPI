@@ -3,6 +3,16 @@
 <head>  
 <script>  
 var request;  
+
+//when server sends response, the html changes
+function getServerResponse(){  
+	if (request.readyState == 4) {  
+		var val = request.responseText;  
+		document.getElementById('amit').innerHTML = val;  
+	}  
+} 
+
+//sends request to server along with information
 function sendInfo()  
 {  
 	var v = document.vinform.t1.value;  
@@ -27,20 +37,12 @@ function sendInfo()
 		alert("Unable to connect to server");  
 	}  
 }  
-  
-function getServerResponse(){  
-	if (request.readyState == 4) {  
-		var val = request.responseText;  
-		document.getElementById('amit').innerHTML = val;  
-	}  
-}  
-
-
-function showRoute(tag)  
+   
+function showRoute(agencyTag)  
 {  
 	alert("calling showRoute");
 	var v = document.vinform.t1.value;  
-	var url = "GetRoutes?tag=" + tag;
+	var url = "GetRoutes?agencyTag=" + agencyTag;
 	
 	if (window.XMLHttpRequest) {  
 		request = new XMLHttpRequest();  
@@ -61,10 +63,29 @@ function showRoute(tag)
 	}  
 }  
 
-function getRouteInfo() {  
-	if(request.readyState == 4){  
-		var val = request.responseText;  
-		document.getElementById('amit').innerHTML = val;  
+
+function showRouteConfig(agencyTag, routeTag)  
+{  
+	alert("calling showRouteConfig");
+	var v = document.vinform.t1.value;  
+	var url = "GetRouteConfig?agencyTag=" + agencyTag + "&routeTag=" + routeTag;
+	
+	if (window.XMLHttpRequest) {  
+		request = new XMLHttpRequest();  
+	}  
+	else if (window.ActiveXObject) {  
+		request = new ActiveXObject("Microsoft.XMLHTTP");  
+	}  
+	  
+	try  
+	{  
+		request.onreadystatechange  = getServerResponse;  
+		request.open("GET", url, true);  
+		request.send();
+	}  
+	catch(e)  
+	{  
+		alert("Unable to connect to server");  
 	}  
 }  
 
