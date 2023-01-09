@@ -5,12 +5,8 @@
     <meta charset="UTF-8">
     <Script>
       const API_KEY = "AIzaSyDVbO9qu-JXbMHKL6jULNdrP1r3o8L0Q4g";
-
-      let URL = "https://maps.googleapis.com/maps/api/geocode/json?";
-
-      const address = "295 Turpike Road, Westborough, MA 01581"
-
-      URL = URL + "address=" + address.replace(" ", "%20") + "&key=" + API_KEY;
+      const ADDRESS = "295 Turpike Road, Westborough, MA 01581"
+      const URL = "https://maps.googleapis.com/maps/api/geocode/json?" + "address=" + ADDRESS.replace(" ", "%20") + "&key=" + API_KEY;
 
       fetch(URL)
               .then((res) => {

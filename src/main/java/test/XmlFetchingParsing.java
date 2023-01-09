@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,6 +24,7 @@ import javax.xml.stream.events.XMLEvent;
 @WebServlet("/XmlFetchingParsing")
 public class XmlFetchingParsing extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private static ArrayList<Agency> agencyList = new ArrayList<>();
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -84,6 +86,9 @@ public class XmlFetchingParsing extends HttpServlet {
 					}
 					out.print("<TD><input type=\"button\" value=\"ShowRoute\" onClick=\"showRoute('" + agencyTag +"')\"></TD>");
 					out.print("</TR>");
+					
+					Agency agency = new Agency(agencyTag, regionTitle, title, shortTitleText);
+					agencyList.add(agency);
 				}
 			}
 			
