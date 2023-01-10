@@ -6,6 +6,12 @@ public class Agency {
 	private String title;
 	private String shortTitle;
 	
+	//lattitude/longitude bounds
+	private double north;
+	private double south;
+	private double west;
+	private double east;
+	
 	//constructor
 	public Agency(String tag, String region, String title, String shortTitle) {
 		this.tag = tag;
@@ -23,6 +29,14 @@ public class Agency {
 	public void setTitle(String title) {this.title = title;}
 	public String getShortTitle() {return shortTitle;}
 	public void setShortTitle(String shortTitle) {this.shortTitle = shortTitle;}
+	public double getNorth() {return north;}
+	public void setNorth(double north) {this.north = north;}
+	public double getSouth() {return south;}
+	public void setSouth(double south) {this.south = south;}
+	public double getWest() {return west;}
+	public void setWest(double west) {this.west = west;}
+	public double getEast() {return east;}
+	public void setEast(double east) {this.east = east;}
 	
 	
 	

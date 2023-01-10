@@ -24,7 +24,7 @@ import javax.xml.stream.events.XMLEvent;
 @WebServlet("/XmlFetchingParsing")
 public class XmlFetchingParsing extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static ArrayList<Agency> agencyList = new ArrayList<>();
+	public static ArrayList<Agency> agencyList = new ArrayList<>();
        
     /**
      * @see HttpServlet#HttpServlet()
