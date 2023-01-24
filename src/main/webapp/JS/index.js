@@ -11,9 +11,16 @@ script.async = true;*/
 let map;
 
 function initMap() {
+  myLatLang = getLatLng();
   map = new google.maps.Map(document.getElementById("map"), {
     center: { lat: -34.397, lng: 150.644 },
     zoom: 8,
+  });
+  
+  new google.maps.Marker({
+	  position: myLatLang,
+	  map,
+	  title: "Hello!"
   });
 }
 
@@ -55,3 +62,15 @@ function getAgencyLocation(address) {
 		alert("Unable to connect to server");  
 	}  
 }
+
+function getLatLng() {
+	locationObject = results.results[0];
+	
+	let resultJSON = {};
+	resultJSON.lat = locationObject.location.lat;
+	resultJSON.lng = locationObject.location.lng;
+	
+	return resultJSON;
+}
+
+
