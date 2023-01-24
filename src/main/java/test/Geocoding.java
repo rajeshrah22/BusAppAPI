@@ -1,5 +1,6 @@
 package test;
 
+import java.io.PrintWriter;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -39,7 +40,9 @@ public class Geocoding extends HttpServlet {
         // TODO Auto-generated constructor stub
     }
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		PrintWriter out = response.getWriter();
+		
 		final String API_KEY = "AIzaSyDVbO9qu-JXbMHKL6jULNdrP1r3o8L0Q4g";
 	    final String API_URL = "https://maps.googleapis.com/maps/api/geocode/json?address=";
 	    String address = "";
@@ -60,7 +63,7 @@ public class Geocoding extends HttpServlet {
             jsonStr += scan.nextLine();
         scan.close();
         
-        System.out.println("JSON: " + jsonStr);
+        out.println(jsonStr);
 
         // Parse the JSON response
         JSONParser parser = new JSONParser();
