@@ -1,49 +1,11 @@
-alert("JS is running");
-
-/*// Create the script tag, set the appropriate attributes
-var script = document.createElement('script');
-script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDVbO9qu-JXbMHKL6jULNdrP1r3o8L0Q4g&callback=initMap&v=weekly';
-script.async = true;*/
-
-// Append the 'script' element to 'head'
-//document.head.appendChild(script);
-
-let map;
-
-function initMap() {
-  myLatLang = getLatLng();
-  map = new google.maps.Map(document.getElementById("map"), {
-    center: { lat: -34.397, lng: 150.644 },
-    zoom: 8,
-  });
-  
-  new google.maps.Marker({
-	  position: myLatLang,
-	  map,
-	  title: "Hello!"
-  });
-}
-
-window.initMap = initMap;
-
-//getting data from server
 var request;
-var results;
 
-//when server sends response, the html changes
-//use callback to use the JSON object 
-function getServerResponse(){ 
-	if (request.readyState == 4) {  
-		results = JSON.parse(request.responseText);
-	}
-}
-
-function getAgencyLocation(address) {
-	address = encodeURI(address);
-	alert("calling showRoute");
-	var v = document.vinform.t1.value;  
-	var url = "Geocoding?address=" + address;
+function getAgencyLocation() {
+	alert("calling getAgencyLocation");
 	
+	let address = encodeURI(document.getElementById("address").value)
+	var url = "/BusApp/Geocoding?address=" + address;
+	console.log(url);
 	if (window.XMLHttpRequest) {  
 		request = new XMLHttpRequest();  
 	}  
@@ -63,14 +25,45 @@ function getAgencyLocation(address) {
 	}  
 }
 
-function getLatLng() {
-	locationObject = results.results[0];
-	
-	let resultJSON = {};
-	resultJSON.lat = locationObject.location.lat;
-	resultJSON.lng = locationObject.location.lng;
-	
-	return resultJSON;
+console.log("JS is running");
+
+/*// Create the script tag, set the appropriate attributes
+var script = document.createElement('script');
+script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDVbO9qu-JXbMHKL6jULNdrP1r3o8L0Q4g&callback=initMap&v=weekly';
+script.async = true;*/
+
+// Append the 'script' element to 'head'
+//document.head.appendChild(script);
+
+let map;
+let marker;
+
+function initMap() {
+  map = new google.maps.Map(document.getElementById("map"), {
+    center: { lat: -34.397, lng: 150.644 },
+    zoom: 8,
+  });
+  
+  marker = new google.maps.Marker({
+	  map,
+  });
 }
 
+window.initMap = initMap;
 
+//getting data from server
+var geocodingResultsJSON;
+
+//when server sends response, the html changes
+//use callback to use the JSON object 
+function getServerResponse(){ 
+	if (request.readyState == 4) {  
+		geocodingResultsJSON = JSON.parse(request.responseText);
+		console.log(geocodingResultsJSON.results[0].geometry.location);
+		document.getElementById("output").innerHTML = JSON.stringify(geocodingResultsJSON.results[0].geometry.location);
+		
+		map.setCenter(geocodingResultsJSON.results[0].geometry.location);
+		marker.setPosition(geocodingResultsJSON.results[0].geometry.location);
+		marker.setMap(map);
+	}	
+}

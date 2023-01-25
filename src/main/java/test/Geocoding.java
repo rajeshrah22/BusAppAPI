@@ -63,7 +63,7 @@ public class Geocoding extends HttpServlet {
             jsonStr += scan.nextLine();
         scan.close();
         
-        out.println(jsonStr);
+        out.print(jsonStr);
 
         // Parse the JSON response
         JSONParser parser = new JSONParser();
