@@ -5,6 +5,7 @@ public class Agency {
 	private String region;
 	private String title;
 	private String shortTitle;
+	private String latLng;  //JSON String
 	
 	//lattitude/longitude bounds
 	private double north;
@@ -37,6 +38,8 @@ public class Agency {
 	public void setWest(double west) {this.west = west;}
 	public double getEast() {return east;}
 	public void setEast(double east) {this.east = east;}
+	public String getLatLng() {return latLng;}
+	public void setLatLng(String json) {this.latLng = json;}
 	
 	
 	

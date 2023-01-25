@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -35,6 +36,8 @@ public class XmlFetchingParsing extends HttpServlet {
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/Geocoding");
+		
 		PrintWriter out = response.getWriter();
 		try {
 			//gets inputStream from URL
@@ -44,28 +47,12 @@ public class XmlFetchingParsing extends HttpServlet {
 			//StaxParser Setup
 			XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
 			XMLEventReader reader = xmlInputFactory.createXMLEventReader(stream);
-			out.print("<Table>");
-			out.print("<TR>");
-				out.print("<TD>");
-				out.print("Agency Tag");
-				out.print("</TD>");
-				out.print("<TD>");
-				out.print("Title");
-				out.print("</TD>");
-				out.print("<TD>");
-				out.print("regionTitle");
-				out.print("</TD>");
-				out.print("<TD>");
-				out.print("Show Routes");
-				out.print("</TD>");
 			
-			out.print("</TR>");
+			//read XML from nextBus
 			while (reader.hasNext()) {
 				
 				XMLEvent nextEvent = reader.nextEvent();
 				if (nextEvent.isStartElement()) {
-					System.out.println("\n----------");
-					out.print("<TR>");
 					StartElement startElm = nextEvent.asStartElement();
 					//if element is not an agency, then skip
 					if (!startElm.getName().getLocalPart().equals("agency")) {
@@ -77,25 +64,20 @@ public class XmlFetchingParsing extends HttpServlet {
 					String regionTitle = startElm.getAttributeByName(new QName("regionTitle")).getValue();
 					String shortTitleText = "";
 					
-					
-					out.print("<TD>" + agencyTag + "</TD> <TD>" + title + "</TD><TD>" + regionTitle+"</TD>");
 					Attribute shortTitle = startElm.getAttributeByName(new QName("shortTitle"));
 					if (shortTitle != null) {
 						shortTitleText = shortTitle.getValue();
-							System.out.print("<br>shortTitle: " + shortTitleText);
 					}
-					out.print("<TD><input type=\"button\" value=\"ShowRoute\" onClick=\"showRoute('" + agencyTag +"')\"></TD>");
-					out.print("</TR>");
 					
 					Agency agency = new Agency(agencyTag, regionTitle, title, shortTitleText);
 					agencyList.add(agency);
 				}
 			}
-			
-			out.print("</Table>");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		dispatcher.forward(request, response);
 	}
 
 	
