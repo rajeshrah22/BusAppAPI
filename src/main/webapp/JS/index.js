@@ -1,10 +1,9 @@
 var request;
 
-function getAgencyLocation() {
-	alert("calling getAgencyLocation");
+function getAgencyLocations() {
+	alert("calling getAgencyLocations");
 	
-	let address = encodeURI(document.getElementById("address").value)
-	var url = "/BusApp/Geocoding?address=" + address;
+	var url = "/BusApp/XmlFetchingParsing";
 	console.log(url);
 	if (window.XMLHttpRequest) {  
 		request = new XMLHttpRequest();  
@@ -26,6 +25,7 @@ function getAgencyLocation() {
 }
 
 console.log("JS is running");
+getAgencyLocations();
 
 /*// Create the script tag, set the appropriate attributes
 var script = document.createElement('script');
@@ -53,17 +53,30 @@ window.initMap = initMap;
 
 //getting data from server
 var geocodingResultsJSON;
+let markerArray = [];
 
 //when server sends response, the html changes
 //use callback to use the JSON object 
-function getServerResponse(){ 
+function getServerResponse() {	 
 	if (request.readyState == 4) {  
 		geocodingResultsJSON = JSON.parse(request.responseText);
-		console.log(geocodingResultsJSON.results[0].geometry.location);
-		document.getElementById("output").innerHTML = JSON.stringify(geocodingResultsJSON.results[0].geometry.location);
+		console.log(geocodingResultsJSON);
 		
-		map.setCenter(geocodingResultsJSON.results[0].geometry.location);
-		marker.setPosition(geocodingResultsJSON.results[0].geometry.location);
-		marker.setMap(map);
+		let resultArray = geocodingResultsJSON.results;
+		
+		for(let agency of resultArray) {
+			let markers = new google.maps.Marker({
+				position: agency.location,
+				map,
+				optimized: true
+			});
+			
+			markers.setMap(map);
+			markerArray.push(marker);
+		}
+		
+		/*map.setCenter();
+		marker.setPosition();
+		marker.setMap();*/
 	}	
 }

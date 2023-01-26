@@ -19,6 +19,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 
@@ -29,8 +30,8 @@ import java.util.Scanner;
 @WebServlet("/Geocoding")
 public class Geocoding extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	static final String API_KEY = "AIzaSyDVbO9qu-JXbMHKL6jULNdrP1r3o8L0Q4g";
-    static final String API_URL = "https://maps.googleapis.com/maps/api/geocode/json?address=";
+	private static final String API_KEY = "AIzaSyDVbO9qu-JXbMHKL6jULNdrP1r3o8L0Q4g";
+    private static final String API_URL = "https://maps.googleapis.com/maps/api/geocode/json?address=";
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -41,20 +42,22 @@ public class Geocoding extends HttpServlet {
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		ArrayList<Agency> agencyList = (ArrayList<Agency>)request.getAttribute("agencyList");
+		System.out.println(agencyList);
 		PrintWriter out = response.getWriter();
 		
 		JSONObject resultJSON = new JSONObject();
 		JSONArray resultArray = new JSONArray();
 	    
 		// go through Agency List
-		for (Agency agency: XmlFetchingParsing.agencyList) {
+		for (Agency agency: agencyList) {
 			JSONObject agencyJSON = new JSONObject();
 			
 			JSONObject result = getGeocodingResult(agency.getRegion());
 			JSONArray results = (JSONArray) result.get("results");
 			JSONObject firstResult = (JSONObject) results.get(0);
 			JSONObject geometry = (JSONObject) firstResult.get("geometry");
-			JSONObject location = (JSONObject) firstResult.get("location");
+			JSONObject location = (JSONObject) geometry.get("location");
 			
 			//stores the location
 			agency.setLatLng(location.toJSONString());
@@ -72,7 +75,13 @@ public class Geocoding extends HttpServlet {
 	}
 	
 	private JSONObject getGeocodingResult (String address) throws MalformedURLException {
-		URL url = new URL(API_URL + address + "&key=" + API_KEY);
+		
+		URL url = null;
+		try {
+			url = new URL(API_URL + URLEncoder.encode(address, "UTF-8") + "&key=" + API_KEY);
+		} catch (MalformedURLException | UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		}
         Scanner scan = null;
         
 		try {

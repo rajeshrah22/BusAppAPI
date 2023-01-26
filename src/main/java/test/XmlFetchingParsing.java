@@ -25,7 +25,7 @@ import javax.xml.stream.events.XMLEvent;
 @WebServlet("/XmlFetchingParsing")
 public class XmlFetchingParsing extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	public static ArrayList<Agency> agencyList = new ArrayList<>();
+	
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -37,6 +37,8 @@ public class XmlFetchingParsing extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/Geocoding");
+		System.out.println("XML servlet was called");
+		ArrayList<Agency> agencyList = new ArrayList<>();
 		
 		PrintWriter out = response.getWriter();
 		try {
@@ -77,8 +79,7 @@ public class XmlFetchingParsing extends HttpServlet {
 			e.printStackTrace();
 		}
 		
+		request.setAttribute("agencyList", agencyList);
 		dispatcher.forward(request, response);
 	}
-
-	
 }

@@ -1,6 +1,7 @@
 package test;
+import java.io.Serializable;
 
-public class Agency {
+public class Agency implements Serializable{
 	private String tag;
 	private String region;
 	private String title;
@@ -40,6 +41,10 @@ public class Agency {
 	public void setEast(double east) {this.east = east;}
 	public String getLatLng() {return latLng;}
 	public void setLatLng(String json) {this.latLng = json;}
+	
+	public String toString() {
+		return "tag: " + tag;
+	}
 	
 	
 	
