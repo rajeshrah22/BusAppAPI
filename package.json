@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/rajeshrah22/BusApp/issues"
   },
-  "homepage": "https://github.com/rajeshrah22/BusApp#readme"
+  "homepage": "https://github.com/rajeshrah22/BusApp#readme",
+  "devDependencies": {
+    "tailwindcss": "^3.2.4"
+  }
 }

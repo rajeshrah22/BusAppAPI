@@ -1,114 +1,25 @@
 <!DOCTYPE html>
-<html>  
-<head>  
-<script>  
-var request;
+<html>
+  <head>
+    <title>Simple Map</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
 
-//when server sends response, the html changes
-function getServerResponse(){  
-	if (request.readyState == 4) {  
-		var val = request.responseText;  
-		document.getElementById('amit').innerHTML = val;  
-	}  
-} 
-
-//sends request to server along with information
-function sendInfo()  
-{  
-	var v = document.vinform.t1.value;  
-	//var url="index.jsp?val="+v;  
-	var url = "XmlFetchingParsing";
-	  
-	if(window.XMLHttpRequest){  
-		request = new XMLHttpRequest();  
-	}  
-	else if(window.ActiveXObject){  
-		request = new ActiveXObject("Microsoft.XMLHTTP");  
-	}  
-	  
-	try  
-	{  
-		request.onreadystatechange  = getServerResponse;  
-		request.open("GET", url, true);  
-		request.send();  
-	}  
-	catch(e)  
-	{  
-		alert("Unable to connect to server");  
-	}  
-}  
-   
-function showRoute(agencyTag)  
-{  
-	alert("calling showRoute");
-	var v = document.vinform.t1.value;  
-	var url = "GetRoutes?agencyTag=" + agencyTag;
-	
-	if (window.XMLHttpRequest) {  
-		request = new XMLHttpRequest();  
-	}  
-	else if (window.ActiveXObject) {  
-		request = new ActiveXObject("Microsoft.XMLHTTP");  
-	}  
-	  
-	try  
-	{  
-		request.onreadystatechange  = getServerResponse;  
-		request.open("GET", url, true);  
-		request.send();
-	}  
-	catch(e)  
-	{  
-		alert("Unable to connect to server");  
-	}  
-}  
-
-
-function showRouteConfig(agencyTag, routeTag)  
-{  
-	alert("calling showRouteConfig");
-	var v = document.vinform.t1.value;  
-	var url = "GetRouteConfig?agencyTag=" + agencyTag + "&routeTag=" + routeTag;
-	
-	if (window.XMLHttpRequest) {  
-		request = new XMLHttpRequest();  
-	}  
-	else if (window.ActiveXObject) {  
-		request = new ActiveXObject("Microsoft.XMLHTTP");  
-	}  
-	  
-	try  
-	{  
-		request.onreadystatechange  = getServerResponse;  
-		request.open("GET", url, true);  
-		request.send();
-	}  
-	catch(e)  
-	{  
-		alert("Unable to connect to server");  
-	}  
-}  
-
-  
-</script>  
-</head>  
-<body>  
-    <marquee><h1>This is an example of ajax</h1></marquee>  
-<form name="vinform">  
-<input type="text" name="t1">  
-<input type="button" value="ShowTable" onClick="sendInfo()">  
-</form>  
-  
-<Table>
-<TR>
-<TD>
-<span id="amit"> </span>  
-</TD>
-</TR>
-</Table>
-
-
-
-  
-</body>  
-</html>  
+    <link rel="stylesheet" type="text/css" href="./CSS/style.css" />
+    <script  src="./JS/index.js"></script>
+  </head>
+  <body>
+    <div id="map"></div>
+	<p id="output"></p>
+	<div id="routes"></div>
+    <!-- 
+      The `defer` attribute causes the callback to execute after the full HTML
+      document has been parsed. For non-blocking uses, avoiding race conditions,
+      and consistent behavior across browsers, consider loading using Promises
+      with https://www.npmjs.com/package/@googlemaps/js-api-loader.
+      -->
+      <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVbO9qu-JXbMHKL6jULNdrP1r3o8L0Q4g&callback=initMap&v=weekly"
+      defer
+    ></script>
+  </body>
+</html>
