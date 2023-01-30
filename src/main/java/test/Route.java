@@ -4,12 +4,10 @@ import java.io.Serializable;
 
 public class Route implements Serializable {
 	private String title;
-	private String shortTitle;
 	private String tag;
 	
-	public Route(String title, String shortTitle, String tag) {
+	public Route(String title, String tag) {
 		this.title = title;
-		this.shortTitle = title;
 		this.tag = tag;
 	}
 
@@ -20,14 +18,6 @@ public class Route implements Serializable {
 
 	public void setTitle(String title) {
 		this.title = title;
-	}
-
-	public String getShortTitle() {
-		return shortTitle;
-	}
-
-	public void setShortTitle(String shortTitle) {
-		this.shortTitle = shortTitle;
 	}
 
 	public String getTag() {

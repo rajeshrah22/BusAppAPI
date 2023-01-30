@@ -41,7 +41,7 @@ public class Geocoding extends HttpServlet {
         // TODO Auto-generated constructor stub
     }
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {	
 		ArrayList<Agency> agencyList = (ArrayList<Agency>)request.getAttribute("agencyList");
 		System.out.println(agencyList);
 		PrintWriter out = response.getWriter();
