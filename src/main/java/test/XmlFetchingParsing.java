@@ -7,6 +7,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -25,6 +26,10 @@ import javax.xml.stream.events.XMLEvent;
 @WebServlet("/XmlFetchingParsing")
 public class XmlFetchingParsing extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
+	}
 	
        
     /**

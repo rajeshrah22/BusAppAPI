@@ -1,28 +1,38 @@
 package playground;
 
 import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.ehcache.*;
+import org.ehcache.config.builders.CacheConfigurationBuilder;
+import org.ehcache.config.builders.CacheManagerBuilder;
+import org.ehcache.config.builders.ResourcePoolsBuilder;
 
-/**
- * Servlet implementation class cacheTest
- */
-@WebServlet("/cacheTest")
-public class cacheTest extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public cacheTest() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+import java.util.Arrays;
+public class cacheTest {
+	public static void main(String[] args) {
+		CacheManager cacheManager = CacheManagerBuilder.newCacheManagerBuilder() 
+			    .withCache("preConfigured",
+			        CacheConfigurationBuilder.newCacheConfigurationBuilder(Long.class, String.class, ResourcePoolsBuilder.heap(10))) 
+			    .build(); 
+			cacheManager.init(); 
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+			Cache<Long, String> preConfigured =
+			    cacheManager.getCache("preConfigured", Long.class, String.class); 
+
+			Cache<Long, String> myCache = cacheManager.createCache("myCache", 
+			    CacheConfigurationBuilder.newCacheConfigurationBuilder(Long.class, String.class, ResourcePoolsBuilder.heap(10)));
+
+			myCache.put(1L, "da one!"); 
+			String value = myCache.get(1L);
+			
+			System.out.println("1L: " + value);
+
+			value = myCache.get(1L);
+			//cacheManager.removeCache("preConfigured"); 
+			cacheManager.removeCache("myCache");
+			cacheManager.close(); 
+			
+			
+			
+			
 	}
 }
