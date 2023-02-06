@@ -2,12 +2,20 @@ package test;
 
 import java.io.PrintWriter;
 import java.io.IOException;
+
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.ehcache.Cache;
+import org.ehcache.CacheManager;
+import org.ehcache.config.builders.CacheConfigurationBuilder;
+import org.ehcache.config.builders.CacheManagerBuilder;
+import org.ehcache.config.builders.ResourcePoolsBuilder;
+import org.ehcache.spi.loaderwriter.CacheLoadingException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.*;
@@ -32,6 +40,8 @@ public class Geocoding extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final String API_KEY = "AIzaSyDVbO9qu-JXbMHKL6jULNdrP1r3o8L0Q4g";
     private static final String API_URL = "https://maps.googleapis.com/maps/api/geocode/json?address=";
+    private static CacheManager cacheManager = null;
+    private static Cache<String, String> geocodedList = null;
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -40,8 +50,30 @@ public class Geocoding extends HttpServlet {
         super();
         // TODO Auto-generated constructor stub
     }
+    
+    public void init(ServletConfig config) throws ServletException {
+    	super.init(config);
+    	
+    	/*build cacheManager with geocoded results list called "gecodedList" 
+    	 *key: String agencyTag, value: String JSONString result*/
+		cacheManager = CacheManagerBuilder.newCacheManagerBuilder()
+			    .withCache("geocodedList",
+			        CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class, ResourcePoolsBuilder.heap(100)))
+			    .build();
+		
+		cacheManager.init();
+		
+		geocodedList = cacheManager.getCache("geocodedList", String.class, String.class);
+    }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {	
+		System.out.println(">>> CAlling DoGET");
+		int size = 0;
+		for(Cache.Entry<String, String> e: geocodedList) {
+			size++;
+			System.out.println("$KEY: " + e.getKey());
+		}
+		System.out.println("CacheSie: " + size);
 		ArrayList<Agency> agencyList = (ArrayList<Agency>)request.getAttribute("agencyList");
 		System.out.println(agencyList);
 		PrintWriter out = response.getWriter();
@@ -50,10 +82,32 @@ public class Geocoding extends HttpServlet {
 		JSONArray resultArray = new JSONArray();
 	    
 		// go through Agency List
+		//if geocoded coordinates are not available in cache, call getGeocdingResult method
+		//to get coordinate result.
 		for (Agency agency: agencyList) {
 			JSONObject agencyJSON = new JSONObject();
 			
-			JSONObject result = getGeocodingResult(agency.getRegion());
+			JSONParser parser = new JSONParser();
+			JSONObject result = null;
+			
+			try {
+				System.out.println("Line 87 AGENCY_TAG: " + agency.getTag());
+				System.out.println("line 89: " + geocodedList.get((String)agency.getTag()));
+				if (geocodedList.get(agency.getTag()) != null) {
+					result =(JSONObject) parser.parse((String) geocodedList.get(agency.getTag()));
+				} else {
+					String jsonResultString = getGeocodingResult(agency.getRegion());
+					result = (JSONObject) parser.parse(jsonResultString);
+					geocodedList.put((String) agency.getTag(), jsonResultString);
+					System.out.println("putting");
+					System.out.println("key: " + agency.getTag() + " value: " + geocodedList.get(agency.getTag()));
+				}
+			} catch (CacheLoadingException e) {
+				e.printStackTrace();
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			
 			JSONArray results = (JSONArray) result.get("results");
 			JSONObject firstResult = (JSONObject) results.get(0);
 			JSONObject geometry = (JSONObject) firstResult.get("geometry");
@@ -72,9 +126,18 @@ public class Geocoding extends HttpServlet {
 		
 		System.out.println(resultJSON.toJSONString());
 		out.print(resultJSON.toJSONString());
+		
+		
+		size = 0;
+		for(Cache.Entry<String, String> e: geocodedList) {
+			size++;
+		}
+		
+		System.out.println("CacheSie: " + size);
+		System.out.println(">>> FINISHED  DoGET");
 	}
 	
-	private JSONObject getGeocodingResult (String address) throws MalformedURLException {
+	private String getGeocodingResult (String address) throws MalformedURLException {
 		
 		URL url = null;
 		try {
@@ -90,21 +153,16 @@ public class Geocoding extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
         String jsonStr = "";
         while (scan.hasNext())
             jsonStr += scan.nextLine();
         scan.close();
-        
-        JSONParser parser = new JSONParser();
-        JSONObject result = null;
-        
-        try {
-			result = (JSONObject) parser.parse(jsonStr);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-        
-        return result;
+           
+        return jsonStr;
+	}
+	
+	public void destroy () {
+		cacheManager.close();
 	}
 }

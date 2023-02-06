@@ -20,32 +20,37 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
+import org.ehcache.CacheManager;
+import org.ehcache.config.builders.CacheConfigurationBuilder;
+import org.ehcache.config.builders.CacheManagerBuilder;
+import org.ehcache.config.builders.ResourcePoolsBuilder;
+import org.ehcache.Cache;
+
 /**
  * Servlet implementation class XmlFetchingParsing
  */
 @WebServlet("/XmlFetchingParsing")
 public class XmlFetchingParsing extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private static CacheManager cacheManager= null;
 	
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-	}
-	
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public XmlFetchingParsing() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
-
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/Geocoding");
-		System.out.println("XML servlet was called");
-		ArrayList<Agency> agencyList = new ArrayList<>();
+		System.out.println("Initializing Bus App");
 		
-		PrintWriter out = response.getWriter();
+		//build cacheManager
+		cacheManager = CacheManagerBuilder.newCacheManagerBuilder()
+			    .withCache("nextBusCache",
+			        CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ArrayList.class, ResourcePoolsBuilder.heap(10)))
+			    .build();
+		
+		cacheManager.init();
+		
+		//fix the type parameter error
+		Cache<String, ArrayList>  nextBusCache = cacheManager.getCache("nextBusCache", String.class, ArrayList.class);
+		
+		//fill agencyList with info from 
+		ArrayList<Agency> agencyList = new ArrayList<>();
 		try {
 			//gets inputStream from URL
 			URL url = new URL("https://retro.umoiq.com/service/publicXMLFeed?command=agencyList");
@@ -80,11 +85,34 @@ public class XmlFetchingParsing extends HttpServlet {
 					agencyList.add(agency);
 				}
 			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
+		nextBusCache.put("agencyList", agencyList);
+	}
+	
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public XmlFetchingParsing() {
+        super();
+    }
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/Geocoding");
+		System.out.println("XML servlet was called");
+		
+		ArrayList<Agency> agencyList = cacheManager.getCache("nextBusCache", String.class, ArrayList.class).get("agencyList");
+		
+		System.out.println(agencyList);
 		request.setAttribute("agencyList", agencyList);
 		dispatcher.forward(request, response);
+	}
+	
+	public void destroy () {
+		cacheManager.close();
 	}
 }

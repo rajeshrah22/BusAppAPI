@@ -36,6 +36,7 @@ public class displayRoutes extends HttpServlet {
 
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("displayRoutes called");
 		ArrayList<Route> routeList = new ArrayList<>();
 		String agencyTag = request.getParameter("agencyTag");
 		
