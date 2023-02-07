@@ -6,6 +6,9 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
 
+//local package(s)
+import test.utility.Agency;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -26,9 +29,6 @@ import org.ehcache.config.builders.CacheManagerBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.Cache;
 
-/**
- * Servlet implementation class XmlFetchingParsing
- */
 @WebServlet("/XmlFetchingParsing")
 public class XmlFetchingParsing extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -105,6 +105,7 @@ public class XmlFetchingParsing extends HttpServlet {
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/Geocoding");
 		System.out.println("XML servlet was called");
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<Agency> agencyList = cacheManager.getCache("nextBusCache", String.class, ArrayList.class).get("agencyList");
 		
 		System.out.println(agencyList);

@@ -1,12 +1,16 @@
-package test;
+package test.utility;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Agency implements Serializable{
+	private static final long serialVersionUID = 7408368444236537313L;
+	
 	private String tag;
 	private String region;
 	private String title;
 	private String shortTitle;
 	private String latLng;  //JSON String
+	private ArrayList<Route> routeList = new ArrayList<Route>();
 	
 	//lattitude/longitude bounds
 	private double north;
@@ -41,6 +45,12 @@ public class Agency implements Serializable{
 	public void setEast(double east) {this.east = east;}
 	public String getLatLng() {return latLng;}
 	public void setLatLng(String json) {this.latLng = json;}
+	public ArrayList<Route> getRouteList() {return this.routeList;}
+
+	public void addRoute(Route route) {
+		routeList.add(route);
+	}
+	
 	
 	public String toString() {
 		return "tag: " + tag;

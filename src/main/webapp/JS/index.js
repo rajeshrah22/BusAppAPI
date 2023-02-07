@@ -1,4 +1,4 @@
-import { plotAgencies } from "./maps";
+//import { plotAgencies } from "./maps";
 
 var request;
 
@@ -55,6 +55,7 @@ getAgencyLocations();
 
 //getting data from server
 var geocodingResultsJSON;
+var resultArray;
 
 //when server sends response, the html changes
 //use callback to use the JSON object 
@@ -63,7 +64,7 @@ function getAgencyResponse() {
 		geocodingResultsJSON = JSON.parse(request.responseText);
 		console.log(geocodingResultsJSON);
 		
-		let resultArray = geocodingResultsJSON.results;
+		resultArray = geocodingResultsJSON.results;
 		
 		//plots agencies on map
 		plotAgencies(resultArray);
