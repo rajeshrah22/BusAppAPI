@@ -29,8 +29,8 @@ import org.ehcache.config.builders.CacheManagerBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.Cache;
 
-@WebServlet("/XmlFetchingParsing")
-public class XmlFetchingParsing extends HttpServlet {
+@WebServlet("/GetAgencyList")
+public class GetAgencyList extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static CacheManager cacheManager= null;
 	
@@ -97,7 +97,7 @@ public class XmlFetchingParsing extends HttpServlet {
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public XmlFetchingParsing() {
+    public GetAgencyList() {
         super();
     }
 

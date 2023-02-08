@@ -73,7 +73,7 @@ public class GetRoutes extends HttpServlet {
 					String title = startElm.getAttributeByName(new QName("title")).getValue();
 					
 					out.print("<TD>" + title + "</TD> <TD>" + routeTag + "</TD>");
-					out.print("<TD><input type=\"button\" value=\"ShowRouteConfig\" onClick=\"showRouteConfig('" + agencyTag + "', '" + routeTag + "')\"></TD>");
+					out.print("<TD><input type=\"button\" value=\"ShowRouteConfig\" onClick=\"getRouteConfig('" + agencyTag + "', '" + routeTag + "')\"></TD>");
 
 					out.print("</TR>");
 				}

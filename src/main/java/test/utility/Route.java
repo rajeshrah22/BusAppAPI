@@ -8,15 +8,19 @@ public class Route implements Serializable {
 	
 	private String title;
 	private String tag;
+	private String color;
+	private String oppositeColor;
 	private int latMin;
 	private int latMax;
 	private int lngMin;
 	private int lngMax;
 	private ArrayList<Direction> directionList = new ArrayList<>();
 	
-	public Route(String title, String tag, int ltM, int ltMx, int lngM, int lngMx) {
+	public Route(String title, String tag, String color, String oppositeColor, int ltM, int ltMx, int lngM, int lngMx) {
 		this.title = title;
 		this.tag = tag;
+		this.color = color;
+		this.oppositeColor = oppositeColor;
 		this.latMin = ltM;
 		this.latMax = ltMx;
 		this.lngMin = lngM;
@@ -24,6 +28,23 @@ public class Route implements Serializable {
 	}
 
 	//getters and setters
+	
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
+
+	public String getOppositeColor() {
+		return oppositeColor;
+	}
+
+	public void setOppositeColor(String oppositeColor) {
+		this.oppositeColor = oppositeColor;
+	}
+	
 	public int getLatMin() {
 		return latMin;
 	}
