@@ -78,7 +78,7 @@ public class GetRouteConfig extends HttpServlet {
 						routeObj.put("lngMax", lngMax);
 					}
 					
-					if (startElm.getName().getLocalPart().equals("stop")) {
+					if (startElm.getName().getLocalPart().equals("stop") && startElm.getAttributeByName(new QName("title")) != null) {
 						String title = startElm.getAttributeByName(new QName("title")).getValue();
 						String tag = startElm.getAttributeByName(new QName("tag")).getValue();
 						String lat = startElm.getAttributeByName(new QName("lat")).getValue();
@@ -86,6 +86,8 @@ public class GetRouteConfig extends HttpServlet {
 						String stopID = startElm.getAttributeByName(new QName("stopId")).getValue();
 						
 						JSONObject stop = new JSONObject();
+						
+						//stop object key, values
 						stop.put("title", title);
 						stop.put("tag", tag);
 						stop.put("lat", lat);
@@ -95,18 +97,78 @@ public class GetRouteConfig extends HttpServlet {
 						stopArray.add(stop);
 					}
 					
+					//reads in info for direction and puts it into an object. Puts its list of stops in an array.
 					if (startElm.getName().getLocalPart().equals("direction")) {
 						String useForUI = startElm.getAttributeByName(new QName("title")).getValue();
 						if(useForUI.equals("true")) {
+							JSONObject direction = new JSONObject();
+							JSONArray stopList = new JSONArray();
+							
 							String title = startElm.getAttributeByName(new QName("title")).getValue();
 							String tag = startElm.getAttributeByName(new QName("tag")).getValue();
+							
+							//reads in the stops in the direction
+							while(!reader.peek().isEndElement()) {
+								XMLEvent element = reader.nextEvent();
+								if (element.isStartElement()) {
+									JSONObject stop = new JSONObject();
+									
+									StartElement elm = element.asStartElement();
+									String tag1 = elm.getAttributeByName(new QName("tag")).getValue();
+									
+									stop.put("tag", tag1);
+									stopList.add(stop);
+								}
+							}
+							
+							//direction object key, values
+							direction.put("title", title);
+							direction.put("tag", tag);
+							direction.put("stopList", stopList);
+							
+							directionArray.add(direction);
 						}
+					}
+					
+					if (startElm.getName().getLocalPart().equals("path")) {
+						JSONObject path = new JSONObject();
+						JSONArray pointArray = new JSONArray();
+						
+						while(!reader.peek().isEndElement()) {
+							XMLEvent element = reader.nextEvent();
+							
+							if (element.isStartElement()) {
+								JSONObject point = new JSONObject();
+								
+								StartElement elm = element.asStartElement();
+								String lat = elm.getAttributeByName(new QName("lat")).getValue();
+								String lng = elm.getAttributeByName(new QName("lon")).getValue();
+								
+								point.put("lat", lat);
+								point.put("lng", lng);
+								
+								pointArray.add(point);
+							}
+						}
+						
+						path.put("pointArray", pointArray);
+						
+						pathArray.add(path);
 					}
 					
 					
 					
 				}
 			}
+			
+			
+			resultJSON.put("route", routeObj);
+			resultJSON.put("stopList", stopArray);
+			resultJSON.put("directionArray", directionArray);
+			resultJSON.put("pathArray", pathArray);
+			resultJSON.put("route", routeObj);
+			
+			out.println(resultJSON.toJSONString());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
