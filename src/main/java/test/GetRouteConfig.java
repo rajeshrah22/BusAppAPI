@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URL;
 
-import test.utility.*;
+import java.lang.StringBuilder;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -27,9 +27,6 @@ import org.json.simple.*;
 public class GetRouteConfig extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    /**	
-     * @see HttpServlet#HttpServlet()
-     */
     public GetRouteConfig() {
         super();
     }
@@ -39,6 +36,21 @@ public class GetRouteConfig extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		String agencyTag = request.getParameter("agencyTag");
 		String routeTag = request.getParameter("routeTag");
+		
+		StringBuilder htmlText = new StringBuilder();
+		
+		htmlText.append("<table>");  //start table
+		htmlText.append("<TR>");
+		htmlText.append("<TD>");
+		htmlText.append("Direction");
+		htmlText.append("</TD>");
+		htmlText.append("<TD>");
+		htmlText.append("Tag");
+		htmlText.append("</TD>");
+		htmlText.append("<TD>");
+		htmlText.append("Show stops");
+		htmlText.append("</TD>");
+		htmlText.append("</TR>");
 		
 		try {
 			URL url = new URL("https://retro.umoiq.com/service/publicXMLFeed?command=routeConfig&a=" + agencyTag + "&r=" + routeTag);
@@ -101,12 +113,18 @@ public class GetRouteConfig extends HttpServlet {
 					if (startElm.getName().getLocalPart().equals("direction")) {
 						String useForUI = startElm.getAttributeByName(new QName("title")).getValue();
 						if(useForUI.equals("true")) {
+							htmlText.append("<tr>");
+							
 							JSONObject direction = new JSONObject();
 							JSONArray stopList = new JSONArray();
 							
 							String title = startElm.getAttributeByName(new QName("title")).getValue();
 							String tag = startElm.getAttributeByName(new QName("tag")).getValue();
 							
+							htmlText.append("<TD>" + title + "</TD> <TD>" + routeTag + "</TD>");
+							htmlText.append("<TD><input type=\"button\" value=\"Show Stops\" onClick=\"showStops('" + routeTag + "', '" + tag + "')\"></TD>");
+							
+							htmlText.append("</tr>");
 							//reads in the stops in the direction
 							while(!reader.peek().isEndElement()) {
 								XMLEvent element = reader.nextEvent();
@@ -161,12 +179,15 @@ public class GetRouteConfig extends HttpServlet {
 				}
 			}
 			
+			htmlText.append("</table>");
+			
 			
 			resultJSON.put("route", routeObj);
 			resultJSON.put("stopList", stopArray);
 			resultJSON.put("directionArray", directionArray);
 			resultJSON.put("pathArray", pathArray);
 			resultJSON.put("route", routeObj);
+			resultJSON.put("htmlText", htmlText);
 			
 			out.println(resultJSON.toJSONString());
 		} catch (Exception e) {
