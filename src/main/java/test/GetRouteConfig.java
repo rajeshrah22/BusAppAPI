@@ -187,7 +187,7 @@ public class GetRouteConfig extends HttpServlet {
 			resultJSON.put("directionArray", directionArray);
 			resultJSON.put("pathArray", pathArray);
 			resultJSON.put("route", routeObj);
-			resultJSON.put("htmlText", htmlText);
+			resultJSON.put("htmlText", htmlText.toString());
 			
 			out.println(resultJSON.toJSONString());
 		} catch (Exception e) {
