@@ -2,7 +2,7 @@
 
 var request;
 
-//Object that stores various http resonse texts
+//Object that stores various http resonse html texts. To implement back tab and forward tab
 var responses = {};
 
 function getAgencyLocations() {
@@ -120,7 +120,9 @@ function getRoutesResponse() {
 
 function getRouteConfigResponse() {
 	if (request.readyState == 4) {  
-		document.getElementById("routes").innerHTML = request.responseText;
-		responses.getRouteConfig.response = request.responseText;
+		let responseJSON = JSON.parse(request.responseText);
+		
+		responses.getRouteConfig.response = responseJSON.htmlText;
+		document.getElementById("routes").innerHTML = responseJSON.htmlText;
 	}
 }

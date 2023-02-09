@@ -19,6 +19,8 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
+import test.utility.*;
+
 /**
  * Servlet implementation class displayRoutes
  */
@@ -81,11 +83,9 @@ public class displayRoutes extends HttpServlet {
 					String routeTag = startElm.getAttributeByName(new QName("tag")).getValue();
 					String title = startElm.getAttributeByName(new QName("title")).getValue();
 					
-					System.out.println("route: " + title);
-					routeList.add(new Route(title, routeTag));
 					
 					out.print("<TD>" + title + "</TD> <TD>" + routeTag + "</TD>");
-					out.print("<TD><input type=\"button\" value=\"ShowRouteConfig\" onClick=\"showRouteConfig('" + agencyTag + "', '" + routeTag + "')\"></TD>");
+					out.print("<TD><input type=\"button\" value=\"ShowRouteConfig\" onClick=\"getRouteConfig('" + agencyTag + "', '" + routeTag + "')\"></TD>");
 
 					out.print("</TR>");
 				}

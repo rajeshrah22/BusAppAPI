@@ -69,15 +69,15 @@ public class Geocoding extends HttpServlet {
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {	
-		System.out.println(">>> CAlling DoGET");
+//		System.out.println(">>> CAlling DoGET");
 		int size = 0;
 		for(Cache.Entry<String, String> e: geocodedList) {
 			size++;
-			System.out.println("$KEY: " + e.getKey());
+//			System.out.println("$KEY: " + e.getKey());
 		}
-		System.out.println("CacheSie: " + size);
+//		System.out.println("CacheSie: " + size);
 		ArrayList<Agency> agencyList = (ArrayList<Agency>)request.getAttribute("agencyList");
-		System.out.println(agencyList);
+//		System.out.println(agencyList);
 		PrintWriter out = response.getWriter();
 		
 		JSONObject resultJSON = new JSONObject();
@@ -93,16 +93,16 @@ public class Geocoding extends HttpServlet {
 			JSONObject result = null;
 			
 			try {
-				System.out.println("Line 87 AGENCY_TAG: " + agency.getTag());
-				System.out.println("line 89: " + geocodedList.get((String)agency.getTag()));
+//				System.out.println("Line 87 AGENCY_TAG: " + agency.getTag());
+//				System.out.println("line 89: " + geocodedList.get((String)agency.getTag()));
 				if (geocodedList.get(agency.getTag()) != null) {
 					result =(JSONObject) parser.parse((String) geocodedList.get(agency.getTag()));
 				} else {
 					String jsonResultString = getGeocodingResult(agency.getRegion());
 					result = (JSONObject) parser.parse(jsonResultString);
 					geocodedList.put((String) agency.getTag(), jsonResultString);
-					System.out.println("putting");
-					System.out.println("key: " + agency.getTag() + " value: " + geocodedList.get(agency.getTag()));
+//					System.out.println("putting");
+//					System.out.println("key: " + agency.getTag() + " value: " + geocodedList.get(agency.getTag()));
 				}
 			} catch (CacheLoadingException e) {
 				e.printStackTrace();
@@ -126,7 +126,7 @@ public class Geocoding extends HttpServlet {
 		
 		resultJSON.put("results", resultArray);
 		
-		System.out.println(resultJSON.toJSONString());
+//		System.out.println(resultJSON.toJSONString());
 		out.print(resultJSON.toJSONString());
 		
 		
@@ -135,8 +135,8 @@ public class Geocoding extends HttpServlet {
 			size++;
 		}
 		
-		System.out.println("CacheSie: " + size);
-		System.out.println(">>> FINISHED  DoGET");
+//		System.out.println("CacheSie: " + size);
+//		System.out.println(">>> FINISHED  DoGET");
 	}
 	
 	private String getGeocodingResult (String address) throws MalformedURLException {

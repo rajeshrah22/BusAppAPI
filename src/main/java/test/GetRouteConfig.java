@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
@@ -33,6 +35,8 @@ public class GetRouteConfig extends HttpServlet {
 
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("routeConfigServletCalled");
+		
 		PrintWriter out = response.getWriter();
 		String agencyTag = request.getParameter("agencyTag");
 		String routeTag = request.getParameter("routeTag");
@@ -70,8 +74,11 @@ public class GetRouteConfig extends HttpServlet {
 				XMLEvent nextEvent = reader.nextEvent();
 				if (nextEvent.isStartElement()) {
 					StartElement startElm = nextEvent.asStartElement();
+					String startElementName = startElm.getName().getLocalPart();
+					
+					//System.out.println("Start Element: " + startElementName);
 					//if element is not a route, then skip
-					if (startElm.getName().getLocalPart().equals("route")) {
+					if (startElementName.equals("route")) {
 						String title = startElm.getAttributeByName(new QName("title")).getValue();
 						String color = startElm.getAttributeByName(new QName("color")).getValue();
 						String oppositeColor = startElm.getAttributeByName(new QName("oppositeColor")).getValue();
@@ -95,7 +102,7 @@ public class GetRouteConfig extends HttpServlet {
 						String tag = startElm.getAttributeByName(new QName("tag")).getValue();
 						String lat = startElm.getAttributeByName(new QName("lat")).getValue();
 						String lng = startElm.getAttributeByName(new QName("lon")).getValue();
-						String stopID = startElm.getAttributeByName(new QName("stopId")).getValue();
+						Attribute stopID = startElm.getAttributeByName(new QName("stopId"));
 						
 						JSONObject stop = new JSONObject();
 						
@@ -104,14 +111,17 @@ public class GetRouteConfig extends HttpServlet {
 						stop.put("tag", tag);
 						stop.put("lat", lat);
 						stop.put("lng", lng);
-						stop.put("stopID", stopID);
+						if (stopID != null) {
+							stop.put("stopID", stopID.getValue());
+						}
+						
 						
 						stopArray.add(stop);
 					}
 					
 					//reads in info for direction and puts it into an object. Puts its list of stops in an array.
 					if (startElm.getName().getLocalPart().equals("direction")) {
-						String useForUI = startElm.getAttributeByName(new QName("title")).getValue();
+						String useForUI = startElm.getAttributeByName(new QName("useForUI")).getValue();
 						if(useForUI.equals("true")) {
 							htmlText.append("<tr>");
 							
@@ -126,8 +136,16 @@ public class GetRouteConfig extends HttpServlet {
 							
 							htmlText.append("</tr>");
 							//reads in the stops in the direction
-							while(!reader.peek().isEndElement()) {
+							while(true) {
 								XMLEvent element = reader.nextEvent();
+								
+								if (element.isEndElement()) {
+									EndElement endElm = element.asEndElement();
+									if (endElm.getName().getLocalPart().equals("direction")) {
+										break;
+									}
+								}
+								
 								if (element.isStartElement()) {
 									JSONObject stop = new JSONObject();
 									
@@ -148,24 +166,40 @@ public class GetRouteConfig extends HttpServlet {
 						}
 					}
 					
+					//read in path info when reader reaches path tag
 					if (startElm.getName().getLocalPart().equals("path")) {
 						JSONObject path = new JSONObject();
 						JSONArray pointArray = new JSONArray();
 						
-						while(!reader.peek().isEndElement()) {
+						INNER_LOOP:
+						while(true) {
 							XMLEvent element = reader.nextEvent();
+							//System.out.println("INNER_LOOP");
+							
+							//inner loop breaks when it reaches end of current path
+							if (element.isEndElement()) {
+								EndElement endElm = element.asEndElement();
+								if (endElm.getName().getLocalPart().equals("path")) {
+									break;
+								}
+							}
 							
 							if (element.isStartElement()) {
 								JSONObject point = new JSONObject();
-								
+							
 								StartElement elm = element.asStartElement();
-								String lat = elm.getAttributeByName(new QName("lat")).getValue();
-								String lng = elm.getAttributeByName(new QName("lon")).getValue();
+								//System.out.println("----- inner: " + elm.getName().getLocalPart());
+								if (elm.getName().getLocalPart().equals("point")) {
 								
-								point.put("lat", lat);
-								point.put("lng", lng);
-								
-								pointArray.add(point);
+									//System.out.println("164: " + elm.getName().getLocalPart());
+									String lat = elm.getAttributeByName(new QName("lat")).getValue();
+									String lng = elm.getAttributeByName(new QName("lon")).getValue();
+									
+									point.put("lat", lat);
+									point.put("lng", lng);
+									
+									pointArray.add(point);
+								}
 							}
 						}
 						
@@ -173,9 +207,6 @@ public class GetRouteConfig extends HttpServlet {
 						
 						pathArray.add(path);
 					}
-					
-					
-					
 				}
 			}
 			
