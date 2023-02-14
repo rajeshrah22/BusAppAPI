@@ -6,21 +6,21 @@
 
     <link rel="stylesheet" type="text/css" href="./CSS/style.css" />
     <script src="./JS/maps.js"></script>
-    <script  src="./JS/index.js"></script>
+    <script  defer src="./JS/index.js"></script>
   </head>
-  <body>
+  <body id = "body">
     <div id="map"></div>
-	<p id="output"></p>
 	<div id="routes"></div>
     <!-- 
-      The `defer` attribute causes the callback to execute after the full HTML
-      document has been parsed. For non-blocking uses, avoiding race conditions,
-      and consistent behavior across browsers, consider loading using Promises
-      with https://www.npmjs.com/package/@googlemaps/js-api-loader.
-      -->
-      <script
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVbO9qu-JXbMHKL6jULNdrP1r3o8L0Q4g&callback=initMap&v=weekly"
-      defer
-    ></script>
+    The `defer` attribute causes the callback to execute after the full HTML
+    document has been parsed. For non-blocking uses, avoiding race conditions,
+    and consistent behavior across browsers, consider loading using Promises
+    with https://www.npmjs.com/package/@googlemaps/js-api-loader.
+    -->
+    <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVbO9qu-JXbMHKL6jULNdrP1r3o8L0Q4g&callback=initMap&v=weekly"
+    defer
+    >
+    </script>
   </body>
 </html>

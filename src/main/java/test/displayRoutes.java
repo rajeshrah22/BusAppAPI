@@ -85,7 +85,7 @@ public class displayRoutes extends HttpServlet {
 					
 					
 					out.print("<TD>" + title + "</TD> <TD>" + routeTag + "</TD>");
-					out.print("<TD><input type=\"button\" value=\"ShowRouteConfig\" onClick=\"getRouteConfig('" + agencyTag + "', '" + routeTag + "')\"></TD>");
+					out.print("<TD><input type=\"button\" value=\"Show route\" onClick=\"getRouteConfig('" + agencyTag + "', '" + routeTag + "')\"></TD>");
 
 					out.print("</TR>");
 				}

@@ -4,14 +4,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URL;
-
+import java.util.ArrayList;
 import java.lang.StringBuilder;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -20,26 +22,66 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
+import org.ehcache.Cache;
+import org.ehcache.CacheManager;
+import org.ehcache.config.builders.CacheConfigurationBuilder;
+import org.ehcache.config.builders.CacheManagerBuilder;
+import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.json.simple.*;
 
 /**
  * Servlet implementation class GetRouteConfig
+ * 
+ * Gets routeConfig info from NextBus API with routeConfig command,
+ * parses through its xml response.
+ * 
+ * Sends list of directions to client side
+ * Adds list of stops, list of path items and points are cached.
+ * this cache will be accessed from GetStops.java, GetPredictions.java, getPathInfo.java
+ * 
+ * cache info:
+ * 		key: String agencyTag+"_"+routeTag
+ * 		value: JSONObject
  */
 @WebServlet("/GetRouteConfig")
 public class GetRouteConfig extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private static CacheManager cacheManager= null;
+
        
     public GetRouteConfig() {
         super();
     }
-
-	
+    
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//gets session and its cache manager attribute
+		HttpSession session = request.getSession();
+		cacheManager = (CacheManager) session.getAttribute("cacheManager");
+		
 		System.out.println("routeConfigServletCalled");
 		
 		PrintWriter out = response.getWriter();
 		String agencyTag = request.getParameter("agencyTag");
 		String routeTag = request.getParameter("routeTag");
+		
+		String cacheKey = agencyTag+"_"+routeTag;
+		
+		//key values in the cache are stored in the format: [AGENCY TAG]_[ROUTE TAG].
+		//in words, the keys are consisted of the string agencyTag concatenated to "_" and to the string routeTag
+		Cache<String, JSONObject> routeCache = cacheManager.getCache("routeCache", String.class, JSONObject.class);
+		
+		//if cache doesn't exist, create cache.
+		if (routeCache == null) {
+			routeCache = cacheManager.createCache("routeCache", 
+	    		    CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, JSONObject.class, ResourcePoolsBuilder.heap(30)));
+		}
+		
+		if (routeCache.containsKey(cacheKey)){
+			out.println(routeCache.get(cacheKey).toJSONString());
+			return;
+		}
+		
+		//System.out.println("did not pull from cache");
 		
 		StringBuilder htmlText = new StringBuilder();
 		
@@ -64,7 +106,7 @@ public class GetRouteConfig extends HttpServlet {
 			XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
 			XMLEventReader reader = xmlInputFactory.createXMLEventReader(stream);
 			
-			JSONObject resultJSON = new JSONObject();
+			JSONObject storageJSON = new JSONObject();
 			JSONObject routeObj = new JSONObject();
 			JSONArray stopArray = new JSONArray();
 			JSONArray directionArray = new JSONArray();
@@ -131,7 +173,9 @@ public class GetRouteConfig extends HttpServlet {
 							String title = startElm.getAttributeByName(new QName("title")).getValue();
 							String tag = startElm.getAttributeByName(new QName("tag")).getValue();
 							
-							htmlText.append("<TD>" + title + "</TD> <TD>" + routeTag + "</TD>");
+							System.out.println("test: " + tag);
+							
+							htmlText.append("<TD>" + title + "</TD> <TD>" + tag + "</TD>");
 							htmlText.append("<TD><input type=\"button\" value=\"Show Stops\" onClick=\"showStops('" + routeTag + "', '" + tag + "')\"></TD>");
 							
 							htmlText.append("</tr>");
@@ -171,7 +215,6 @@ public class GetRouteConfig extends HttpServlet {
 						JSONObject path = new JSONObject();
 						JSONArray pointArray = new JSONArray();
 						
-						INNER_LOOP:
 						while(true) {
 							XMLEvent element = reader.nextEvent();
 							//System.out.println("INNER_LOOP");
@@ -213,12 +256,17 @@ public class GetRouteConfig extends HttpServlet {
 			htmlText.append("</table>");
 			
 			
-			resultJSON.put("route", routeObj);
-			resultJSON.put("stopList", stopArray);
-			resultJSON.put("directionArray", directionArray);
-			resultJSON.put("pathArray", pathArray);
-			resultJSON.put("route", routeObj);
-			resultJSON.put("htmlText", htmlText.toString());
+			storageJSON.put("route", routeObj);
+			storageJSON.put("stopList", stopArray);
+			storageJSON.put("directionArray", directionArray);
+			storageJSON.put("pathArray", pathArray);
+			storageJSON.put("route", routeObj);
+			storageJSON.put("htmlText", htmlText.toString());
+			
+			routeCache.put(cacheKey, storageJSON);
+			
+			JSONObject resultJSON = new JSONObject();
+			resultJSON.put("htmlText", storageJSON.get("htmlText"));
 			
 			out.println(resultJSON.toJSONString());
 		} catch (Exception e) {

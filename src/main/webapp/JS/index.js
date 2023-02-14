@@ -1,9 +1,7 @@
-//import { plotAgencies } from "./maps";
-
 var request;
 
-//Object that stores various http resonse html texts. To implement back tab and forward tab
-var responses = {};
+//initial css
+//hideAside();
 
 function getAgencyLocations() {
 	alert("calling getAgencyLocations");
@@ -32,12 +30,6 @@ function getAgencyLocations() {
 function getRoutes(agencyTag) {
 	alert("calling getRouteLocations");
 	
-	//preparing responses object to store response text
-	responses.getRoutes = {
-		"agencyTag": agencyTag,
-		"response": null
-	}
-	
 	var url = "/BusApp/displayRoutes?agencyTag=" + agencyTag;
 	console.log("url: " + url);
 	if (window.XMLHttpRequest) {  
@@ -62,13 +54,6 @@ function getRoutes(agencyTag) {
 function getRouteConfig(agencyTag, routeTag) {
 	alert("calling getRouteConfig");
 	
-	//preparing responses object to store response text
-	responses.getRouteConfig = {
-		"agencyTag": agencyTag,
-		"routeTag": routeTag,
-		response: null
-	}
-	
 	var url = "/BusApp/GetRouteConfig?agencyTag=" + agencyTag + "&routeTag=" + routeTag;
 	console.log("url: " + url);
 	if (window.XMLHttpRequest) {  
@@ -88,6 +73,10 @@ function getRouteConfig(agencyTag, routeTag) {
 	{  
 		alert("Unable to connect to server");  
 	}  
+}
+
+function showStops() {
+	
 }
 
 console.log("JS is running");
@@ -114,7 +103,6 @@ function getAgencyResponse() {
 function getRoutesResponse() {
 	if (request.readyState == 4) {  
 		document.getElementById("routes").innerHTML = request.responseText;
-		responses.getRoutes.response = request.responseText;
 	}	
 }
 
@@ -122,7 +110,6 @@ function getRouteConfigResponse() {
 	if (request.readyState == 4) {  
 		let responseJSON = JSON.parse(request.responseText);
 		
-		responses.getRouteConfig.response = responseJSON.htmlText;
 		document.getElementById("routes").innerHTML = responseJSON.htmlText;
 	}
 }
