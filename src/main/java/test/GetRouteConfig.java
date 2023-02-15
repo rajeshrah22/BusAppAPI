@@ -42,7 +42,47 @@ import org.json.simple.*;
  * cache info:
  * 		key: String agencyTag+"_"+routeTag
  * 		value: JSONObject
+ * 
+ * JSONObject format:
+ * 	
  */
+
+/*
+ * result JSONObject format:
+	{
+	  	route: {
+	  		title: String,
+	  		color: String,
+	  		oppositeColor: String,
+	  		latMin: String,
+	  		latMax: String,
+	  		lngMin: String,
+	  		lngMax: String
+	  	},
+	  	stopList: [{
+	  		title: String,
+	  		tag: String,
+	  		lat: String,
+	  		lng: String
+	  	}, ... ],
+	  	directionArray: [{
+	  		title: String,
+	  		tag: String,
+	  		stopList: [{
+	  			tag: String
+	  		}, ... ]
+	  	}, ... ],
+	 	pathArray: [{
+	 		pointArray: [{
+	 			lat: String,
+	 			lng: String
+	 		}, ... ]
+	 	}, ... ],
+	  	htmlText: String
+  	}
+ 
+*/
+
 @WebServlet("/GetRouteConfig")
 public class GetRouteConfig extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -176,7 +216,7 @@ public class GetRouteConfig extends HttpServlet {
 							System.out.println("test: " + tag);
 							
 							htmlText.append("<TD>" + title + "</TD> <TD>" + tag + "</TD>");
-							htmlText.append("<TD><input type=\"button\" value=\"Show Stops\" onClick=\"showStops('" + routeTag + "', '" + tag + "')\"></TD>");
+							htmlText.append("<TD><input type=\"button\" value=\"Show Stops\" onClick=\"getDirectionInfo('" + agencyTag + "', '" + routeTag + "', '" + tag + "')\"></TD>");
 							
 							htmlText.append("</tr>");
 							//reads in the stops in the direction
@@ -260,7 +300,6 @@ public class GetRouteConfig extends HttpServlet {
 			storageJSON.put("stopList", stopArray);
 			storageJSON.put("directionArray", directionArray);
 			storageJSON.put("pathArray", pathArray);
-			storageJSON.put("route", routeObj);
 			storageJSON.put("htmlText", htmlText.toString());
 			
 			routeCache.put(cacheKey, storageJSON);

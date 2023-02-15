@@ -30,7 +30,7 @@ function getAgencyLocations() {
 function getRoutes(agencyTag) {
 	alert("calling getRouteLocations");
 	
-	var url = "/BusApp/displayRoutes?agencyTag=" + agencyTag;
+	var url = "/BusApp/GetRoutes?agencyTag=" + agencyTag;
 	console.log("url: " + url);
 	if (window.XMLHttpRequest) {  
 		request = new XMLHttpRequest();  
@@ -72,11 +72,31 @@ function getRouteConfig(agencyTag, routeTag) {
 	catch(e)  
 	{  
 		alert("Unable to connect to server");  
-	}  
+	}
 }
 
-function showStops() {
+function getDirectionInfo(agencyTag, routeTag, directionTag) {
+	alert("calling getDirectionInfo");
 	
+	var url = "/BusApp/GetDirectionInfo?agencyTag=" + agencyTag + "&routeTag=" + routeTag + "&directionTag=" + directionTag;
+	console.log("url: " + url);
+	if (window.XMLHttpRequest) {  
+		request = new XMLHttpRequest();  
+	}  
+	else if (window.ActiveXObject) {  
+		request = new ActiveXObject("Microsoft.XMLHTTP");  
+	}  
+	  
+	try  
+	{  
+		request.onreadystatechange  = getDirectionInfoResponse;  
+		request.open("GET", url, true);  
+		request.send();
+	}  
+	catch(e)  
+	{  
+		alert("Unable to connect to server");  
+	}
 }
 
 console.log("JS is running");
@@ -111,5 +131,12 @@ function getRouteConfigResponse() {
 		let responseJSON = JSON.parse(request.responseText);
 		
 		document.getElementById("routes").innerHTML = responseJSON.htmlText;
+	}
+}
+
+function getDirectionInfoResponse() {
+	if (request.readyState == 4) {
+		let responseJSON = JSON.parse(request.responseText);
+		
 	}
 }

@@ -32,6 +32,19 @@ function plotAgencies(agencyList) {
 		}
 }
 
+function plotDirection(directionStops, stopList, pathArray) {
+	for (let dStop of directionStops) {
+		let stop = stopList.find((element) => element.tag == dStop.tag);
+		
+		let location = {
+			"lat": stop.lat,
+			"lng": stop.lng
+		};
+		
+		
+	}
+}
+
 
 function haversine_distance(mk1, mk2) {
       var R = 3958.8; // Radius of the Earth in miles
