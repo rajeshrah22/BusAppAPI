@@ -73,6 +73,7 @@ import org.json.simple.*;
 	  		}, ... ]
 	  	}, ... ],
 	 	pathArray: [{
+	 		pathID: String,
 	 		pointArray: [{
 	 			lat: String,
 	 			lng: String
@@ -272,6 +273,12 @@ public class GetRouteConfig extends HttpServlet {
 							
 								StartElement elm = element.asStartElement();
 								//System.out.println("----- inner: " + elm.getName().getLocalPart());
+								if (elm.getName().getLocalPart().equals("tag")) {
+									String pathID = elm.getAttributeByName(new QName("id")).getValue();
+									
+									path.put("pathID", pathID);
+								}
+								
 								if (elm.getName().getLocalPart().equals("point")) {
 								
 									//System.out.println("164: " + elm.getName().getLocalPart());

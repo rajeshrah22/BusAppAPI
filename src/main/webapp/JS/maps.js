@@ -9,7 +9,10 @@ function initMap() {
 
 window.initMap = initMap;
 
-let markerArray = [];
+let markerArrays = {
+	"agencies": [],
+	"stops": []
+};
 
 //plot agencies on map and add them to markerArray
 function plotAgencies(agencyList) {
@@ -28,11 +31,15 @@ function plotAgencies(agencyList) {
 				getRoutes(agency.tag);
 			});
 			
-			markerArray.push(marker);
+			markerArray.agencies.push(marker);
 		}
 }
 
-function plotDirection(directionStops, stopList, pathArray) {
+/**
+ * plots the stops in the direction
+ * plots the path of the route/direction in the color given
+ */
+function plotDirection(directionStops, stopList, pathArray, color) {
 	for (let dStop of directionStops) {
 		let stop = stopList.find((element) => element.tag == dStop.tag);
 		
@@ -42,9 +49,38 @@ function plotDirection(directionStops, stopList, pathArray) {
 		};
 		
 		
+		plotStop(location, stop.title);
+	}
+	
+	for(let path of pathArray) {
+		draw(path.pointArray, color);
 	}
 }
 
+function plotStop(location, tag) {
+	let marker = new google.maps.Marker({
+				position: location,
+				map,
+				optimized: true,
+				title: tag
+			});
+			
+	marker.setMap(map);
+	
+	makerArrays.stops.push(marker);
+}
+
+function draw(coordinateList, color) {
+	const routePath = new google.maps.Polyline({
+	    path: coordinateList,
+	    geodesic: true,
+	    strokeColor: color,
+	    strokeOpacity: 1.0,
+	    strokeWeight: 2,
+	});
+
+	routePath.setMap(map);
+}
 
 function haversine_distance(mk1, mk2) {
       var R = 3958.8; // Radius of the Earth in miles
