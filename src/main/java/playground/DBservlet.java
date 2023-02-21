@@ -1,4 +1,4 @@
-package test;
+package playground;
 
 import java.io.IOException;
 import java.io.PrintWriter;
