@@ -30,16 +30,16 @@ resultJSON Format:
 		stopList: [{
 	  		title: String,
 	  		tag: String,
-	  		lat: String,
-	  		lng: String
+	  		lat: number,
+	  		lng: number
 	  	}, ... ],
 		directionStops: [{
   			tag: String
   		}, ... ],
 		pathArray: [{
 	 		pointArray: [{
-	 			lat: String,
-	 			lng: String
+	 			lat: number,
+	 			lng: number
 	 		}, ... ]
 	 	}, ... ]
 	}

@@ -116,8 +116,4 @@ public class GetAgencyList extends HttpServlet {
 		request.setAttribute("agencyList", agencyList);
 		dispatcher.forward(request, response);
 	}
-	
-	public void destroy () {
-		cacheManager.close();
-	}
 }

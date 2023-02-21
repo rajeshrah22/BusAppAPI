@@ -138,5 +138,6 @@ function getDirectionInfoResponse() {
 	if (request.readyState == 4) {
 		let responseJSON = JSON.parse(request.responseText);
 		
+		plotDirection(responseJSON.directionStops, responseJSON.stopList, responseJSON.pathArray, responseJSON.color);
 	}
 }

@@ -54,16 +54,16 @@ import org.json.simple.*;
 	  		title: String,
 	  		color: String,
 	  		oppositeColor: String,
-	  		latMin: String,
-	  		latMax: String,
-	  		lngMin: String,
-	  		lngMax: String
+	  		latMin: number,
+	  		latMax: number,
+	  		lngMin: number,
+	  		lngMax: number
 	  	},
 	  	stopList: [{
 	  		title: String,
 	  		tag: String,
-	  		lat: String,
-	  		lng: String
+	  		lat: number,
+	  		lng: number
 	  	}, ... ],
 	  	directionArray: [{
 	  		title: String,
@@ -75,8 +75,8 @@ import org.json.simple.*;
 	 	pathArray: [{
 	 		pathID: String,
 	 		pointArray: [{
-	 			lat: String,
-	 			lng: String
+	 			lat: number,
+	 			lng: number
 	 		}, ... ]
 	 	}, ... ],
 	  	htmlText: String
@@ -174,10 +174,10 @@ public class GetRouteConfig extends HttpServlet {
 						routeObj.put("title", title);
 						routeObj.put("color", color);
 						routeObj.put("oppositeColor", oppositeColor);
-						routeObj.put("latMin", latMin);
-						routeObj.put("latMax", latMax);
-						routeObj.put("lngMin", lngMin);
-						routeObj.put("lngMax", lngMax);
+						routeObj.put("latMin", Double.parseDouble(latMin));
+						routeObj.put("latMax", Double.parseDouble(latMax));
+						routeObj.put("lngMin", Double.parseDouble(lngMin));
+						routeObj.put("lngMax", Double.parseDouble(lngMax));
 					}
 					
 					if (startElm.getName().getLocalPart().equals("stop") && startElm.getAttributeByName(new QName("title")) != null) {
@@ -192,8 +192,8 @@ public class GetRouteConfig extends HttpServlet {
 						//stop object key, values
 						stop.put("title", title);
 						stop.put("tag", tag);
-						stop.put("lat", lat);
-						stop.put("lng", lng);
+						stop.put("lat", Double.parseDouble(lat));
+						stop.put("lng", Double.parseDouble(lng));
 						if (stopID != null) {
 							stop.put("stopID", stopID.getValue());
 						}
@@ -285,8 +285,8 @@ public class GetRouteConfig extends HttpServlet {
 									String lat = elm.getAttributeByName(new QName("lat")).getValue();
 									String lng = elm.getAttributeByName(new QName("lon")).getValue();
 									
-									point.put("lat", lat);
-									point.put("lng", lng);
+									point.put("lat", Double.parseDouble(lat));
+									point.put("lng", Double.parseDouble(lng));
 									
 									pointArray.add(point);
 								}

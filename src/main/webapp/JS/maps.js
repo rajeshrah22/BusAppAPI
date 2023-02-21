@@ -31,7 +31,7 @@ function plotAgencies(agencyList) {
 				getRoutes(agency.tag);
 			});
 			
-			markerArray.agencies.push(marker);
+			markerArrays.agencies.push(marker);
 		}
 }
 
@@ -40,6 +40,7 @@ function plotAgencies(agencyList) {
  * plots the path of the route/direction in the color given
  */
 function plotDirection(directionStops, stopList, pathArray, color) {
+	console.log("plotDirection called: ");
 	for (let dStop of directionStops) {
 		let stop = stopList.find((element) => element.tag == dStop.tag);
 		
@@ -47,6 +48,8 @@ function plotDirection(directionStops, stopList, pathArray, color) {
 			"lat": stop.lat,
 			"lng": stop.lng
 		};
+		
+		console.log(location);
 		
 		
 		plotStop(location, stop.title);
@@ -58,6 +61,8 @@ function plotDirection(directionStops, stopList, pathArray, color) {
 }
 
 function plotStop(location, tag) {
+	console.log("plotDirection called: ");
+	
 	let marker = new google.maps.Marker({
 				position: location,
 				map,
@@ -67,7 +72,7 @@ function plotStop(location, tag) {
 			
 	marker.setMap(map);
 	
-	makerArrays.stops.push(marker);
+	markerArrays.stops.push(marker);
 }
 
 function draw(coordinateList, color) {

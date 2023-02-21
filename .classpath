@@ -16,5 +16,6 @@
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="lib" path="C:/work/eclipse-workspace/BusApp/src/main/webapp/WEB-INF/lib/ehcache-3.10.0.jar"/>
 	<classpathentry kind="lib" path="C:/work/eclipse-workspace/BusApp/src/main/webapp/WEB-INF/lib/slf4j-api-1.7.25.jar"/>
+	<classpathentry kind="lib" path="C:/work/eclipse-workspace/BusApp/src/main/webapp/WEB-INF/lib/mysql-connector-j-8.0.32.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
