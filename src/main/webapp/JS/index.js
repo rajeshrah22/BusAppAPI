@@ -3,11 +3,8 @@ var request;
 //initial css
 //hideAside();
 
-function getAgencyLocations() {
-	alert("calling getAgencyLocations");
-	
+function getAgencyLocations() {	
 	var url = "/BusApp/GetAgencyList";
-	console.log(url);
 	if (window.XMLHttpRequest) {  
 		request = new XMLHttpRequest();  
 	}  
@@ -27,11 +24,8 @@ function getAgencyLocations() {
 	}  
 }
 
-function getRoutes(agencyTag) {
-	alert("calling getRouteLocations");
-	
+function getRoutes(agencyTag) {	
 	var url = "/BusApp/GetRoutes?agencyTag=" + agencyTag;
-	console.log("url: " + url);
 	if (window.XMLHttpRequest) {  
 		request = new XMLHttpRequest();  
 	}  
@@ -51,11 +45,8 @@ function getRoutes(agencyTag) {
 	} 
 }
 
-function getRouteConfig(agencyTag, routeTag) {
-	alert("calling getRouteConfig");
-	
+function getRouteConfig(agencyTag, routeTag) {	
 	var url = "/BusApp/GetRouteConfig?agencyTag=" + agencyTag + "&routeTag=" + routeTag;
-	console.log("url: " + url);
 	if (window.XMLHttpRequest) {  
 		request = new XMLHttpRequest();  
 	}  
@@ -75,11 +66,8 @@ function getRouteConfig(agencyTag, routeTag) {
 	}
 }
 
-function getDirectionInfo(agencyTag, routeTag, directionTag) {
-	alert("calling getDirectionInfo");
-	
+function getDirectionInfo(agencyTag, routeTag, directionTag) {	
 	var url = "/BusApp/GetDirectionInfo?agencyTag=" + agencyTag + "&routeTag=" + routeTag + "&directionTag=" + directionTag;
-	console.log("url: " + url);
 	if (window.XMLHttpRequest) {  
 		request = new XMLHttpRequest();  
 	}  
@@ -99,7 +87,6 @@ function getDirectionInfo(agencyTag, routeTag, directionTag) {
 	}
 }
 
-console.log("JS is running");
 getAgencyLocations();
 
 //getting data from server
@@ -111,7 +98,6 @@ var resultArray;
 function getAgencyResponse() {
 	if (request.readyState == 4) {  
 		geocodingResultsJSON = JSON.parse(request.responseText);
-		console.log(geocodingResultsJSON);
 		
 		resultArray = geocodingResultsJSON.results;
 		
