@@ -32,15 +32,14 @@ function plotAgencies(agencyList) {
 			});
 			
 			markerArrays.agencies.push(marker);
-		}
+	}
 }
 
 /**
  * plots the stops in the direction
  * plots the path of the route/direction in the color given
  */
-function plotDirection(directionStops, stopList, pathArray, color) {
-	console.log("plotDirection called: ");
+function plotDirection(directionStops, stopList, pathArray, color) {		
 	for (let dStop of directionStops) {
 		let stop = stopList.find((element) => element.tag == dStop.tag);
 		
@@ -48,21 +47,47 @@ function plotDirection(directionStops, stopList, pathArray, color) {
 			"lat": stop.lat,
 			"lng": stop.lng
 		};
-		
-		console.log(location);
-		
+						
 		
 		plotStop(location, stop.title);
 	}
 	
+	let bounds = findBounds(stopList);
+	
 	for(let path of pathArray) {
 		draw(path.pointArray, color);
 	}
+	
+	map.fitBounds(bounds, 5);
 }
 
-function plotStop(location, tag) {
-	console.log("plotDirection called: ");
+const findBounds = (stopList) => {
+	let bounds = {
+		north: -90,  //initial max of lattitude
+		south: 90,  //initial min of lattitude
+		east: -180,   //initial max of longitude
+		west: 180,   //initial min of longitude
+	}
 	
+	for (let stop of stopList) {
+		if (stop.lat > bounds.north) {
+			bounds.north = stop.lat
+		}
+		if (stop.lat < bounds.south) {
+			bounds.south = stop.lat
+		}
+		if (stop.lng > bounds.east) {
+			bounds.east = stop.lng
+		}
+		if (stop.lng < bounds.west) {
+			bounds.west = stop.lng
+		}
+	}
+	
+	return bounds;	
+}
+
+function plotStop(location, tag) {	
 	let marker = new google.maps.Marker({
 				position: location,
 				map,

@@ -119,20 +119,15 @@ public class Geocoding extends HttpServlet {
 			
 			agencyJSON.put("tag", agency.getTag());
 			agencyJSON.put("location", location);
+			agencyJSON.put("regionTitle", agency.getRegion());
 			
 			resultArray.add(agencyJSON);
 		}
 		
 		resultJSON.put("results", resultArray);
 		
-//		System.out.println(resultJSON.toJSONString());
 		out.print(resultJSON.toJSONString());
-		
-		
-		
-		
-//		System.out.println("CacheSie: " + size);
-//		System.out.println(">>> FINISHED  DoGET");
+		System.out.println(resultJSON.toJSONString());
 	}
 	
 	private JSONObject getGeocodingResult (String address) throws MalformedURLException {

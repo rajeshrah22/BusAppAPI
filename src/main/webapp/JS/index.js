@@ -1,5 +1,8 @@
 var request;
 
+//remembers pages visited, used to implement back feature
+var pages = [];
+
 //initial css
 //hideAside();
 
@@ -101,14 +104,38 @@ function getAgencyResponse() {
 		
 		resultArray = geocodingResultsJSON.results;
 		
+		//display agencies on the side
+		document.getElementById("list").innerHTML = displayAgencies(resultArray);
+		
 		//plots agencies on map
 		plotAgencies(resultArray);
 	}	
 }
 
+function displayAgencies(agencies) {
+	let htmlString = "<h3>To view bus agency: click on markers on the map or select from table below</h3><table><tr><td>Agency Tag</td><td>Agency Region</td></tr>"
+	for (let agency of agencies) {
+		htmlString += `<tr><td>${agency.tag}</td><td>${agency.regionTitle}</td><td><input type=\"button\" value=\"Show routes\" onClick=\"getRoutes('${agency.tag}')\"></td></tr>"`;
+	}
+	
+	htmlString += "</table>"
+
+	pages.push({
+		htmlString: htmlString,
+		type: "agencies"
+	});
+		
+	return htmlString;
+}
+
 function getRoutesResponse() {
 	if (request.readyState == 4) {  
-		document.getElementById("routes").innerHTML = request.responseText;
+		document.getElementById("list").innerHTML = request.responseText;
+		
+		pages.push({
+			htmlString: request.responseText,
+			type: "routes"
+		});
 	}	
 }
 
@@ -116,7 +143,12 @@ function getRouteConfigResponse() {
 	if (request.readyState == 4) {  
 		let responseJSON = JSON.parse(request.responseText);
 		
-		document.getElementById("routes").innerHTML = responseJSON.htmlText;
+		document.getElementById("list").innerHTML = responseJSON.htmlText;
+		
+		pages.push({
+			htmlString: responseJSON.htmlText,
+			type: "routeConfigs"
+		});
 	}
 }
 
@@ -126,4 +158,16 @@ function getDirectionInfoResponse() {
 		
 		plotDirection(responseJSON.directionStops, responseJSON.stopList, responseJSON.pathArray, responseJSON.color);
 	}
+}
+
+function navigateBack() {
+	if (pages.length == 1) return;
+	
+	pages.pop();
+	
+	let newPage = pages.at(pages.length - 1);
+	map.setZoom(2);
+	map.setCenter({ lat: 25, lng: 0 });
+	
+	document.getElementById("list").innerHTML = newPage.htmlString;
 }
