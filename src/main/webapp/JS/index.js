@@ -6,7 +6,7 @@ var pages = [];
 //initial css
 //hideAside();
 
-function getAgencyLocations() {	
+function getAgencyLocations() {
 	var url = "/BusApp/GetAgencyList";
 	if (window.XMLHttpRequest) {  
 		request = new XMLHttpRequest();  
