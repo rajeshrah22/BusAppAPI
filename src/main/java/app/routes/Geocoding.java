@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.io.IOException;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -60,8 +61,8 @@ public class Geocoding extends HttpServlet {
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession();
-		cacheManager = (CacheManager) session.getAttribute("cacheManager");
+		ServletContext application = getServletContext();
+		cacheManager = (CacheManager) application.getAttribute("cacheManager");
 		
 		//gets cache if exists
 		geocodedList = cacheManager.getCache("geocodedList", String.class, JSONObject.class);

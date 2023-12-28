@@ -3,6 +3,7 @@ package app.routes;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -55,9 +56,8 @@ public class GetDirectionInfo extends HttpServlet {
     }
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//gets session and its cache manager attribute
-		HttpSession session = request.getSession();
-		cacheManager = (CacheManager) session.getAttribute("cacheManager");
+		ServletContext application = getServletContext();
+		cacheManager = (CacheManager) application.getAttribute("cacheManager");
 		
 		PrintWriter out = response.getWriter();
 		String agencyTag = request.getParameter("agencyTag");

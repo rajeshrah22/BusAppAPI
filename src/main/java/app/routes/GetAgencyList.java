@@ -11,6 +11,7 @@ import app.model.Agency;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -37,6 +38,7 @@ public class GetAgencyList extends HttpServlet {
 	
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
+		ServletContext application = config.getServletContext();
 		System.out.println("Initializing Bus App");
 		
 		//build cacheManager
@@ -46,6 +48,8 @@ public class GetAgencyList extends HttpServlet {
 			    .build();
 		
 		cacheManager.init();
+		
+		application.setAttribute("cacheManager", cacheManager);
 		
 		//fix the type parameter error
 		Cache<String, ArrayList>  nextBusCache = cacheManager.getCache("nextBusCache", String.class, ArrayList.class);
@@ -104,7 +108,9 @@ public class GetAgencyList extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession(true);
-		session.setAttribute("cacheManager", cacheManager);
+		ServletContext application = getServletContext();
+
+		CacheManager cacheManager = (CacheManager) application.getAttribute("cacheManager");
 		
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/Geocoding");
 		System.out.println("XML servlet was called");

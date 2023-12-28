@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.lang.StringBuilder;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -95,9 +96,9 @@ public class GetRouteConfig extends HttpServlet {
     }
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//gets session and its cache manager attribute
-		HttpSession session = request.getSession();
-		cacheManager = (CacheManager) session.getAttribute("cacheManager");
+		//gets context and its cache manager attribute
+		ServletContext application = getServletContext();
+		cacheManager = (CacheManager) application.getAttribute("cacheManager");
 		
 		System.out.println("routeConfigServletCalled");
 		
