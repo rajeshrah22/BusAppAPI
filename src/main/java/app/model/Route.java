@@ -1,4 +1,4 @@
-package test.utility;
+package app.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
