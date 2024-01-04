@@ -107,7 +107,6 @@ public class GetAgencyList extends HttpServlet {
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession(true);
 		ServletContext application = getServletContext();
 
 		CacheManager cacheManager = (CacheManager) application.getAttribute("cacheManager");
