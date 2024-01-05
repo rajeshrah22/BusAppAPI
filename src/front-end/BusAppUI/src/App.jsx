@@ -5,13 +5,13 @@ import { useState } from 'react'
 import { Box } from '@mui/material'
 
 //components
-import SideMenu from './components/SideMenu'
+import Menu from './components/Menu'
 
 
 function App() {
   return (
     <Box sx={{ display: 'flex' }}>
-      <SideMenu/>
+      <Menu/>
     </Box>
   )
 }
