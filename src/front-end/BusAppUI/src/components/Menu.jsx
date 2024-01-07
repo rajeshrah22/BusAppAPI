@@ -10,24 +10,40 @@ import Skeleton from '@mui/material/Skeleton'
 import DragHandleIcon from '@mui/icons-material/DragHandle'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
-import ListItemText from '@mui/material/ListItemText'
 import ListItemButton from '@mui/material/ListItemButton'
+import ListItemText from '@mui/material/ListItemText'
+import ListItemAvatar from '@mui/material/ListItemAvatar'
+import Avatar from '@mui/material/Avatar'
+import ImageIcon from '@mui/icons-material/Image'
 import { useTheme } from '@emotion/react'
 import TextField from '@mui/material/TextField'
 import InputAdornment from '@mui/material/InputAdornment'
 import SearchIcon from '@mui/icons-material/Search'
+import Paper from '@mui/material/Paper'
 
 const AgencyLink = ({agencyTag, location, handleClick}) => {
   return (
     <>
-      <ListItemButton
+      <Paper
+        elevation={1}
         sx={{
-          borderRadius: 1,
-          width: '100%',
+          my: 1,
         }}
       >
-        <ListItemText>{agencyTag}</ListItemText>
-      </ListItemButton>
+        <ListItemButton
+          sx={{
+            borderRadius: 1,
+            width: '100%',
+          }}
+        >
+          <ListItemAvatar>
+            <Avatar>
+              <ImageIcon />
+            </Avatar>
+          </ListItemAvatar>
+          <ListItemText primary={agencyTag} secondary={location}></ListItemText>
+        </ListItemButton>
+      </Paper>
     </>
   )
 }
@@ -37,10 +53,12 @@ const MenuList = ({ list }) => {
     <>
       <List>
         {
-          list.map((agencyTag) => {
+          list.map((agency, index) => {
             return (
               <AgencyLink
-                agencyTag={agencyTag}
+                agencyTag={agency.agencyTag}
+                location={agency.location}
+                key={index}
               />
             )
           })
@@ -71,7 +89,20 @@ const SearchBox = () => {
   )
 }
 
-const agencyTags = ["yessir", "yeah", "Malborough"]
+const agencies = [
+  {
+    "agencyTag": "yessir",
+    "location": "Westborough"
+  },
+  {
+    "agencyTag": "yeah",
+    "location": "New York"
+  },
+  {
+    "agencyTag": "Malborough",
+    "location": "Manchester"
+  }
+]
 
 const Menu = () => {
   const [open, setOpen] = React.useState(false)
@@ -140,11 +171,13 @@ const Menu = () => {
           <Box
             sx={{
               borderRadius: 1,
-              border: `1px solid ${theme.palette.grey.A400}`,
+              // border: `1px solid ${theme.palette.grey.A400}`,
+              border: 'none',
               height: '100%',
             }}
-          />
-            {/* <MenuList list={agencyTags}> */}
+          >
+            <MenuList list={agencies}/>
+          </Box>
         </Box>
       </Drawer>
     </>
