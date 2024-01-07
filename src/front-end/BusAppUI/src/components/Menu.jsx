@@ -11,22 +11,83 @@ import DragHandleIcon from '@mui/icons-material/DragHandle'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
+import ListItemButton from '@mui/material/ListItemButton'
 import { useTheme } from '@emotion/react'
 import TextField from '@mui/material/TextField'
 import InputAdornment from '@mui/material/InputAdornment'
 import SearchIcon from '@mui/icons-material/Search'
 
+const AgencyLink = ({agencyTag, location, handleClick}) => {
+  return (
+    <>
+      <ListItemButton
+        sx={{
+          borderRadius: 1,
+          width: '100%',
+        }}
+      >
+        <ListItemText>{agencyTag}</ListItemText>
+      </ListItemButton>
+    </>
+  )
+}
+
+const MenuList = ({ list }) => {
+  return (
+    <>
+      <List>
+        {
+          list.map((agencyTag) => {
+            return (
+              <AgencyLink
+                agencyTag={agencyTag}
+              />
+            )
+          })
+        }
+      </List>
+    </>
+  )
+}
+
+const SearchBox = () => {
+  return (
+    <TextField
+          sx={{
+            mb: 2, // Add some bottom margin to separate it from the DragHandleIcon
+            width: '100%', // Adjust as needed
+            px: 2,
+          }}
+          variant="outlined"
+          placeholder="Search"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+    />
+  )
+}
+
+const agencyTags = ["yessir", "yeah", "Malborough"]
+
 const Menu = () => {
-  const [open, setOpen] = React.useState(true)
+  const [open, setOpen] = React.useState(false)
 
   const toggleDrawer = (open) => {
     setOpen(open)
   }
 
+  //prop constants
   const ANCHOR = 'bottom'
+
+  //style constants
   const DRAWER_BLEEDING = 103
-  const ICON_WIDTH = '16px';
-  const DRAWER_HEIGHT = '50%'
+  const ICON_WIDTH = '16px'
+  const DRAWER_HEIGHT = '75%'
+
 
   const theme = useTheme()
 
@@ -66,34 +127,24 @@ const Menu = () => {
             }}
           >
           </DragHandleIcon>
-          <TextField
-            sx={{
-              mt: 0, // Add some top margin to separate it from the DragHandleIcon
-              mb: 2, // Add some bottom margin to separate it from the DragHandleIcon
-              width: '90%', // Adjust as needed
-              marginLeft: '5%', // Center the TextField
-              marginRight: '5%', // Center the TextField
-            }}
-            variant="outlined"
-            placeholder="Search"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-        />
+          <SearchBox/>
         </Box>
         <Box
           sx={{
             px: 2,
-            pb: 2,
+            py: 2,
             height: '100%',
             overflow: 'auto',
           }}
         >
-          <Skeleton variant="rectangular" height="100%"/>
+          <Box
+            sx={{
+              borderRadius: 1,
+              border: `1px solid ${theme.palette.grey.A400}`,
+              height: '100%',
+            }}
+          />
+            {/* <MenuList list={agencyTags}> */}
         </Box>
       </Drawer>
     </>
