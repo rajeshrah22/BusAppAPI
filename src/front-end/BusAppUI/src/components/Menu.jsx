@@ -12,16 +12,19 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
 import { useTheme } from '@emotion/react'
+import TextField from '@mui/material/TextField'
+import InputAdornment from '@mui/material/InputAdornment'
+import SearchIcon from '@mui/icons-material/Search'
 
 const Menu = () => {
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = React.useState(true)
 
   const toggleDrawer = (open) => {
     setOpen(open)
   }
 
   const ANCHOR = 'bottom'
-  const DRAWER_BLEEDING = 31
+  const DRAWER_BLEEDING = 103
   const ICON_WIDTH = '16px';
   const DRAWER_HEIGHT = '50%'
 
@@ -31,6 +34,7 @@ const Menu = () => {
     <>
       <Drawer
         sx={{ 
+          backgroundColor: 'white',
           '.MuiPaper-root': {
             // borderRadius: `${theme.spacing(1)} ${theme.spacing(1)} 0 0`,
             height: `calc(${DRAWER_HEIGHT} - ${DRAWER_BLEEDING}px)`,
@@ -45,6 +49,7 @@ const Menu = () => {
       >
         <Box
           sx={{
+            border: 'none',
             backgroundColor: 'white',
             position: 'absolute',
             top: -DRAWER_BLEEDING,
@@ -52,7 +57,7 @@ const Menu = () => {
             borderRadius: `${theme.spacing(1)} ${theme.spacing(1)} 0 0`,
             right: 0,
             left: 0,
-            // boxShadow: '0px 3px 5px 2px rgba(0, 0, 0, 0.3)',
+            elevation: 0,
           }}
         >
           <DragHandleIcon
@@ -61,6 +66,24 @@ const Menu = () => {
             }}
           >
           </DragHandleIcon>
+          <TextField
+            sx={{
+              mt: 0, // Add some top margin to separate it from the DragHandleIcon
+              mb: 2, // Add some bottom margin to separate it from the DragHandleIcon
+              width: '90%', // Adjust as needed
+              marginLeft: '5%', // Center the TextField
+              marginRight: '5%', // Center the TextField
+            }}
+            variant="outlined"
+            placeholder="Search"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+        />
         </Box>
         <Box
           sx={{
