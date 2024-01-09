@@ -42,11 +42,11 @@ const agencies = [
 const API_URL = 'http://localhost:8080/BusApp'
 
 export const fetchAgencies = async () => {
-  // const response = await axios.get(`${API_URL}/GetAgencyList`)
-
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve(agencies);
-    }, 1000);
-  });
+  return axios
+    .get(`${API_URL}/GetAgencyList`)
+    .then(response => response.data.results)
+    .catch(error => {
+      console.error('Error fetching agencies:', error)
+      throw error
+    })
 }

@@ -16,8 +16,8 @@ import { GlobalStyles } from '@mui/material'
 import { SearchBox } from './SearchBox'
 import MenuList from './MenuList'
 import MenuAccordion from './menuAccordion'
-
 import { fetchAgencies } from '../api/api'
+import { HeadingCard } from './HeadingCard'
 
 const routes = [
   {
@@ -55,7 +55,7 @@ const routes = [
 //style constants
 const DRAWER_BLEEDING = 31
 const ICON_WIDTH = '16px'
-const DRAWER_HEIGHT = '75%'
+const DRAWER_HEIGHT = '100%'
 
 const inputGlobalStyles = (
 <GlobalStyles
@@ -133,14 +133,13 @@ const Menu = () => {
             overflow: 'auto',
           }}
         >
+          <HeadingCard/>
           <SearchBox/>
           <Box
             sx={{
               borderRadius: 1,
               // border: `1px solid ${theme.palette.grey.A400}`,
               border: 'none',
-              height: '100%',
-              overflow: 'scroll',
             }}
           >
             {
@@ -190,3 +189,5 @@ const Menu = () => {
 }
 
 export default Menu
+
+
