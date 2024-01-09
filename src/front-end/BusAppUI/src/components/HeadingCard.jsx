@@ -4,7 +4,7 @@ import { useTheme } from '@emotion/react'
 import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
 
-export function HeadingCard() {
+export function HeadingCard({ inputState }) {
 
   const theme = useTheme()
   return (
@@ -25,7 +25,7 @@ export function HeadingCard() {
         <Typography
           color="white"
           variant="h4"
-        >Agencies</Typography>
+        >{inputState.showAgencies? "Agencies" : inputState.agencyTag.charAt(0).toUpperCase() + inputState.agencyTag.slice(1) }</Typography>
       </Box>
       <Box
         sx={{
@@ -35,7 +35,15 @@ export function HeadingCard() {
         <Typography
           color="white"
           variant="body1"
-        >Select agency on map or in the list below</Typography>
+        >
+          {
+            inputState.showAgencies
+            ?
+            "Select agency on map or in the list below"
+            :
+            "Select route from the list below"
+          }
+        </Typography>
       </Box>
     </Paper>
   )

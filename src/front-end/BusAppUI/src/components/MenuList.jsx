@@ -14,7 +14,7 @@ const Link = ({ primary, secondary, handleClick }) => {
   return (
     <>
       <Paper
-        elevation={1}
+        elevation={0}
         sx={{
           my: 1,
         }}

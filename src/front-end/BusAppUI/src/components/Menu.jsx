@@ -16,7 +16,8 @@ import { GlobalStyles } from '@mui/material'
 import { SearchBox } from './SearchBox'
 import MenuList from './MenuList'
 import MenuAccordion from './menuAccordion'
-import { fetchAgencies } from '../api/api'
+import BottomNavigation from './BottomNavigation'
+import { fetchAgencies, fetchRoutes } from '../api/api'
 import { HeadingCard } from './HeadingCard'
 
 const routes = [
@@ -52,6 +53,10 @@ const routes = [
   }
 ]
 
+const agencyRoutes = {
+  "*": routes,
+}
+
 //style constants
 const DRAWER_BLEEDING = 31
 const ICON_WIDTH = '16px'
@@ -70,15 +75,17 @@ const inputGlobalStyles = (
 
 const Menu = () => {
   const [open, setOpen] = React.useState(true)
-  const [showAgencies, setShowAgencies] = useState(true)
-  const [agencies, setAgencies] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [showAgencies, setShowAgencies] = useState({showAgencies: true, agencyTag: null})
+  const [agencies, setAgencies] = useState(null)
+  const [routes, setRoutes] = useState(null)
+  const [loading, setLoading] = useState(true)
+
 
   useEffect(() => {
-    fetchAgencies().then((agencies) => {
-      setAgencies(agencies);
-      setLoading(false);
-    });
+      fetchAgencies().then((agencies) => {
+        setAgencies(agencies)
+        setLoading(false)
+      })
   }, []);
 
 
@@ -87,8 +94,20 @@ const Menu = () => {
   }
 
   const handleAgencyClick = (agencyTag) => {
-    console.log(agencyTag)
-    setShowAgencies(false)
+    setLoading(true)
+    fetchRoutes(agencyTag).then((routes) => {
+      setRoutes(routes)
+      setLoading(false)
+    })
+    setShowAgencies({...showAgencies,showAgencies: false, agencyTag: agencyTag})
+  }
+
+  const handleBackNavigation = () => {
+    if (showAgencies.showAgencies) {
+      return
+    }
+
+    setShowAgencies({...showAgencies, showAgencies: true})
   }
 
   //prop constants
@@ -127,61 +146,54 @@ const Menu = () => {
         </Box>
         <Box
           sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
             px: 2,
             py: 2,
-            height: '100%',
-            overflow: 'auto',
           }}
         >
-          <HeadingCard/>
-          <SearchBox/>
+          <HeadingCard inputState={showAgencies} />
+          <SearchBox inputState={showAgencies} />
           <Box
             sx={{
+              flex: 1,
               borderRadius: 1,
-              // border: `1px solid ${theme.palette.grey.A400}`,
-              border: 'none',
+              overflow: 'auto',
             }}
           >
-            {
-              loading ?
-                <>
-                  {
-                    [...Array(8)].map((item, index) => {
-                      return (
-                        <Skeleton
-                          key={index}
-                          variant="rectangular"
-                          width="100%"
-                          height={70}
-                          sx={{
-                            borderRadius: 1,
-                            my: 1,
-                          }}
-                        />
-                      )
-                    })
-                  }
-                </>
-                :
-                <>
-                  {
-                    showAgencies ?
-                    <>
-                      <MenuList
-                        list={agencies}
-                        handleClick={handleAgencyClick}
-                      />
-                    </>
-                    :
-                    <>
-                      <MenuAccordion
-                        routes={routes}
-                      />
-                    </>
-                  }
-                </>
-            }
+            {loading ? (
+              <>
+                {[...Array(8)].map((item, index) => {
+                  return (
+                    <Skeleton
+                      key={index}
+                      variant="rectangular"
+                      width="100%"
+                      height={70}
+                      sx={{
+                        borderRadius: 1,
+                        my: 1,
+                      }}
+                    />
+                  );
+                })}
+              </>
+            ) : (
+              <>
+                {showAgencies.showAgencies ? (
+                  <>
+                    <MenuList list={agencies} handleClick={handleAgencyClick} />
+                  </>
+                ) : (
+                  <>
+                    <MenuAccordion routes={routes} />
+                  </>
+                )}
+              </>
+            )}
           </Box>
+          <BottomNavigation handleBackNavigation={handleBackNavigation}/>
         </Box>
       </Drawer>
     </>

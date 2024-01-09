@@ -23,12 +23,8 @@ const MenuAccordion = ({ routes }) => {
         routes.map((route, index) => {
           return (
             <Accordion
+              elevation={0}
               key={index}
-              sx={{
-                'MuiSvgIcon-root': {
-                  color: route.color
-                }
-              }}
             >
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
