@@ -1,5 +1,5 @@
 //React
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 
 //MUI
 import { styled } from '@mui/material/styles'
@@ -17,44 +17,7 @@ import { SearchBox } from './SearchBox'
 import MenuList from './MenuList'
 import MenuAccordion from './menuAccordion'
 
-const agencies = [
-  {
-    "agencyTag": "yessir",
-    "location": "Westborough"
-  },
-  {
-    "agencyTag": "yeah",
-    "location": "New York"
-  },
-  {
-    "agencyTag": "Malborough",
-    "location": "Manchester"
-  },
-  {
-    "agencyTag": "yessir",
-    "location": "Westborough"
-  },
-  {
-    "agencyTag": "yeah",
-    "location": "New York"
-  },
-  {
-    "agencyTag": "Malborough",
-    "location": "Manchester"
-  },
-  {
-    "agencyTag": "yessir",
-    "location": "Westborough"
-  },
-  {
-    "agencyTag": "yeah",
-    "location": "New York"
-  },
-  {
-    "agencyTag": "Malborough",
-    "location": "Manchester"
-  },
-]
+import { fetchAgencies } from '../api/api'
 
 const routes = [
   {
@@ -107,9 +70,25 @@ const inputGlobalStyles = (
 
 const Menu = () => {
   const [open, setOpen] = React.useState(true)
+  const [showAgencies, setShowAgencies] = useState(true)
+  const [agencies, setAgencies] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchAgencies().then((agencies) => {
+      setAgencies(agencies);
+      setLoading(false);
+    });
+  }, []);
+
 
   const toggleDrawer = (open) => {
     setOpen(open)
+  }
+
+  const handleAgencyClick = (agencyTag) => {
+    console.log(agencyTag)
+    setShowAgencies(false)
   }
 
   //prop constants
@@ -164,8 +143,45 @@ const Menu = () => {
               overflow: 'scroll',
             }}
           >
-            <MenuList list={agencies}/>
-            {/* <MenuAccordion routes={routes}/> */}
+            {
+              loading ?
+                <>
+                  {
+                    [...Array(8)].map((item, index) => {
+                      return (
+                        <Skeleton
+                          key={index}
+                          variant="rectangular"
+                          width="100%"
+                          height={70}
+                          sx={{
+                            borderRadius: 1,
+                            my: 1,
+                          }}
+                        />
+                      )
+                    })
+                  }
+                </>
+                :
+                <>
+                  {
+                    showAgencies ?
+                    <>
+                      <MenuList
+                        list={agencies}
+                        handleClick={handleAgencyClick}
+                      />
+                    </>
+                    :
+                    <>
+                      <MenuAccordion
+                        routes={routes}
+                      />
+                    </>
+                  }
+                </>
+            }
           </Box>
         </Box>
       </Drawer>

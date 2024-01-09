@@ -12,7 +12,7 @@ export const SearchBox = () => {
         mb: 2,
       }}
       variant="outlined"
-      placeholder="Search"
+      placeholder="Search bus agencies"
       InputProps={{
         startAdornment: (
           <InputAdornment position="start">

@@ -10,6 +10,7 @@ import IconButton from '@mui/material/IconButton'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import DirectionsTransitIcon from '@mui/icons-material/DirectionsTransit';
 import DirectionsIcon from '@mui/icons-material/Directions';
+import MapIcon from '@mui/icons-material/Map';
 import Avatar from '@mui/material/Avatar'
 import { useTheme } from '@emotion/react'
 
@@ -57,7 +58,6 @@ const MenuAccordion = ({ routes }) => {
                         key={index}
                         sx={{
                           borderRadius: 1,
-                          pl: 4,
                         }}
                       >
                         <ListItemAvatar>
@@ -70,6 +70,9 @@ const MenuAccordion = ({ routes }) => {
                           </Avatar>
                         </ListItemAvatar>
                         <ListItemText primary={direction.title} secondary={direction.tag}></ListItemText>
+                        <IconButton>
+                          <MapIcon />
+                        </IconButton>
                       </ListItem>
                     )
                   })}

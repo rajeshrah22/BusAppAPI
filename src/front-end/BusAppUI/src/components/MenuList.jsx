@@ -35,7 +35,9 @@ const Link = ({ primary, secondary, handleClick }) => {
             </Avatar>
           </ListItemAvatar>
           <ListItemText primary={primary} secondary={secondary}></ListItemText>
-          <IconButton>
+          <IconButton
+            onClick={() => handleClick(primary)}
+          >
             <ArrowForwardIcon />
           </IconButton>
         </ListItem>
@@ -43,7 +45,7 @@ const Link = ({ primary, secondary, handleClick }) => {
     </>
   )
 }
-export const MenuList = ({ list }) => {
+export const MenuList = ({ list, handleClick}) => {
   return (
     <>
       <List
@@ -54,8 +56,9 @@ export const MenuList = ({ list }) => {
         {list.map((agency, index) => {
           return (
             <Link
-              primary={agency.agencyTag}
-              secondary={agency.location}
+              primary={agency.tag}
+              secondary={agency.regionTitle}
+              handleClick={handleClick}
               key={index} />
           );
         })}
