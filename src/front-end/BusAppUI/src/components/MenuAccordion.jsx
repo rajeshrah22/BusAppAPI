@@ -17,10 +17,12 @@ import { useTheme } from '@emotion/react'
 const MenuAccordion = ({ routes }) => {
   const theme = useTheme();
 
+  console.log(routes)
+
   return (
     <>
       {
-        routes.map((route, index) => {
+        routes.map((result, index) => {
           return (
             <Accordion
               elevation={0}
@@ -38,17 +40,17 @@ const MenuAccordion = ({ routes }) => {
                   <ListItemAvatar>
                     <Avatar
                       sx={{
-                        backgroundColor: route.color
+                        backgroundColor: `#${result.route.color}`
                       }}
                     >
                       {<DirectionsTransitIcon />}
                     </Avatar>
                   </ListItemAvatar>
-                  <ListItemText primary={route.title} secondary={route.tag}></ListItemText>
+                  <ListItemText primary={result.route.title} secondary={result.route.routeTag}></ListItemText>
                 </ListItem>
               </AccordionSummary>
               <AccordionDetails>
-                  {route.directions.map((direction, index) => {
+                  {result.directionArray.map((direction, index) => {
                     return (
                       <ListItem
                         key={index}
@@ -59,7 +61,7 @@ const MenuAccordion = ({ routes }) => {
                         <ListItemAvatar>
                           <Avatar
                             sx={{
-                              backgroundColor: route.color
+                              backgroundColor: `#${result.route.color}`
                             }}
                           >
                             {<DirectionsIcon />}

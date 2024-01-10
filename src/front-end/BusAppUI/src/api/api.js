@@ -83,7 +83,7 @@ const API_URL = 'http://localhost:8080/BusApp'
 
 export const fetchAgencies = async () => {
   return axios
-    .get(`${API_URL}/GetAgencyList`)
+    .get(encodeURI(`${API_URL}/GetAgencies`))
     .then(response => response.data.results)
     .catch(error => {
       console.error('Error fetching agencies:', error)
@@ -92,9 +92,11 @@ export const fetchAgencies = async () => {
 }
 
 export const fetchRoutes = async (agencyTag) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve(agencyRoutes[agencyTag] || agencyRoutes['*']);  //replace with agencyRoutes[agencyTag]
-    }, 1000); //simulate delay
-  });
+  return axios
+    .get(encodeURI(`${API_URL}/GetRoutes?agencyTag=${agencyTag}`))
+    .then(response => response.data.results)
+    .catch(error => {
+      console.error('Error fetching routes:', error)
+      throw error
+    })
 }
