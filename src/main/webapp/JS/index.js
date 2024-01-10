@@ -7,7 +7,7 @@ var pages = [];
 //hideAside();
 
 function getAgencyLocations() {
-	var url = "/BusApp/GetAgencyList";
+	var url = "/BusApp/GetAgencies";
 	if (window.XMLHttpRequest) {  
 		request = new XMLHttpRequest();  
 	}  

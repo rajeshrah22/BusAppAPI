@@ -23,7 +23,7 @@ public class CacheManagerService{
 			    .withCache("routes",
 				        CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ArrayList.class, ResourcePoolsBuilder.heap(100)))
 			    .withCache("routeConfigs",
-				        CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ArrayList.class, ResourcePoolsBuilder.heap(100)))
+				        CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, JSONObject.class, ResourcePoolsBuilder.heap(100)))
 			    .build();
 		
 		cacheManager.init();
@@ -70,12 +70,12 @@ public class CacheManagerService{
 		return cache;
 	}
 	
-	public  Cache<String, ArrayList> getRouteConfigCache() {
-		Cache<String, ArrayList> cache = cacheManager.getCache("routeConfigs", String.class, ArrayList.class);
+	public  Cache<String, JSONObject> getRouteConfigCache() {
+		Cache<String, JSONObject> cache = cacheManager.getCache("routeConfigs", String.class, JSONObject.class);
 				
 		if (cache == null) {
 			cache = cacheManager.createCache("routeConfigs", 
-	    		    CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ArrayList.class, ResourcePoolsBuilder.heap(100)));
+	    		    CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, JSONObject.class, ResourcePoolsBuilder.heap(100)));
 		}
 		
 		return cache;

@@ -93,5 +93,9 @@ public class Route implements Serializable {
 		this.tag = tag;
 	}
 	
+	public String toString() {
+		return "tag: " + tag + ", title: " + title;
+	}
+	
 	
 }

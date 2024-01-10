@@ -1,6 +1,7 @@
 package app.routes;
 
 import java.io.IOException;
+
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URL;
@@ -8,6 +9,8 @@ import java.util.ArrayList;
 
 //local package(s)
 import app.model.Agency;
+import app.service.XmlApiService;
+import app.service.CacheManagerService;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -31,71 +34,24 @@ import org.ehcache.config.builders.CacheManagerBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.Cache;
 
-@WebServlet("/GetAgencyList")
-public class GetAgencyList extends HttpServlet {
+@WebServlet("/GetAgencies")
+public class GetAgencyList extends BaseServlet {
 	private static final long serialVersionUID = 1L;
-	private static CacheManager cacheManager= null;
+//	private static CacheManager cacheManager= null;
+	private XmlApiService xmlApiService;
 	
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-		ServletContext application = config.getServletContext();
 		System.out.println("Initializing Bus App");
 		
-		//build cacheManager
-		cacheManager = CacheManagerBuilder.newCacheManagerBuilder()
-			    .withCache("nextBusCache",
-			        CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ArrayList.class, ResourcePoolsBuilder.heap(10)))
-			    .build();
+		ServletContext context = getServletContext();
 		
-		cacheManager.init();
-		
-		application.setAttribute("cacheManager", cacheManager);
+		CacheManagerService cacheManagerService = (CacheManagerService) context.getAttribute("cacheManagerService");
 		
 		//fix the type parameter error
-		Cache<String, ArrayList>  nextBusCache = cacheManager.getCache("nextBusCache", String.class, ArrayList.class);
-		
-		//fill agencyList with info from 
-		ArrayList<Agency> agencyList = new ArrayList<>();
-		try {
-			//gets inputStream from URL
-			URL url = new URL("https://retro.umoiq.com/service/publicXMLFeed?command=agencyList");
-			InputStream stream = url.openStream();
-			
-			//StaxParser Setup
-			XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
-			XMLEventReader reader = xmlInputFactory.createXMLEventReader(stream);
-			
-			//read XML from nextBus
-			while (reader.hasNext()) {
-				
-				XMLEvent nextEvent = reader.nextEvent();
-				if (nextEvent.isStartElement()) {
-					StartElement startElm = nextEvent.asStartElement();
-					//if element is not an agency, then skip
-					if (!startElm.getName().getLocalPart().equals("agency")) {
-						continue;
-					}
-					
-					String agencyTag = startElm.getAttributeByName(new QName("tag")).getValue();
-					String title = startElm.getAttributeByName(new QName("title")).getValue();
-					String regionTitle = startElm.getAttributeByName(new QName("regionTitle")).getValue();
-					String shortTitleText = "";
-					
-					Attribute shortTitle = startElm.getAttributeByName(new QName("shortTitle"));
-					if (shortTitle != null) {
-						shortTitleText = shortTitle.getValue();
-					}
-					
-					Agency agency = new Agency(agencyTag, regionTitle, title, shortTitleText);
-					agencyList.add(agency);
-				}
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		nextBusCache.put("agencyList", agencyList);
+		Cache<String, ArrayList>  agencyCache = cacheManagerService.getAgencyCache();
+		ArrayList<Agency> agencyList = xmlApiService.getAgencyList();
+		agencyCache.put("agencyList", agencyList);
 	}
 	
        
@@ -104,18 +60,18 @@ public class GetAgencyList extends HttpServlet {
      */
     public GetAgencyList() {
         super();
+        xmlApiService = new XmlApiService();
     }
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		ServletContext application = getServletContext();
-
-		CacheManager cacheManager = (CacheManager) application.getAttribute("cacheManager");
-		
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {		
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/Geocoding");
 		System.out.println("XML servlet was called");
 		
+		ServletContext context = getServletContext();
+		CacheManagerService cacheManagerService = (CacheManagerService) context.getAttribute("cacheManagerService");
+		
 		@SuppressWarnings("unchecked")
-		ArrayList<Agency> agencyList = cacheManager.getCache("nextBusCache", String.class, ArrayList.class).get("agencyList");
+		ArrayList<Agency> agencyList = cacheManagerService.getAgencyCache().get("agencyList");
 		
 		System.out.println(agencyList);
 		request.setAttribute("agencyList", agencyList);
