@@ -79,7 +79,7 @@ const agencyRoutes = {
 
 /*------------simulation data end ------- */
 
-const API_URL = 'http://localhost:8080/BusApp'
+const API_URL = '/BusApp'
 
 export const fetchAgencies = async () => {
   return axios

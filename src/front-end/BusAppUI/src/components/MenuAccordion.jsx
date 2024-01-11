@@ -16,9 +16,7 @@ import { useTheme } from '@emotion/react'
 
 const MenuAccordion = ({ routes }) => {
   const theme = useTheme();
-
-  console.log(routes)
-
+  
   return (
     <>
       {
