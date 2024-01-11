@@ -1,7 +1,6 @@
 package app.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 public class Route implements Serializable {
 	private static final long serialVersionUID = -1062071274498740524L;
@@ -14,7 +13,6 @@ public class Route implements Serializable {
 	private int latMax;
 	private int lngMin;
 	private int lngMax;
-	private ArrayList<Direction> directionList = new ArrayList<>();
 	
 	public Route(String title, String tag, String color, String oppositeColor, int ltM, int ltMx, int lngM, int lngMx) {
 		this.title = title;

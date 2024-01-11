@@ -1,7 +1,13 @@
 package app.routes;
 
-import java.io.PrintWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -10,31 +16,16 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.ehcache.Cache;
-import org.ehcache.CacheManager;
-import org.ehcache.config.builders.CacheConfigurationBuilder;
-import org.ehcache.config.builders.CacheManagerBuilder;
-import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.spi.loaderwriter.CacheLoadingException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.*;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import app.model.Agency;
 import app.service.CacheManagerService;
-import app.routes.BaseServlet;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Scanner;
 
 
 
@@ -49,18 +40,26 @@ import java.util.Scanner;
 @WebServlet("/Geocoding")
 public class Geocoding extends BaseServlet {
 	private static final long serialVersionUID = 1L;
-	private static final String API_KEY = "AIzaSyDVbO9qu-JXbMHKL6jULNdrP1r3o8L0Q4g";
-    private static final String API_URL = "https://maps.googleapis.com/maps/api/geocode/json?address=";
-    private static Cache<String, JSONObject> geocodedList = null;
-       
+	private static String API_KEY;
+    private static String API_URL;
+    
     /**
      * @see HttpServlet#HttpServlet()
      */
     public Geocoding() {
         super();
+        System.out.println(API_URL);
         // TODO Auto-generated constructor stub
     }
+    
+    public void init(ServletConfig config) throws ServletException {
+    	super.init(config);
+    	
+    	API_KEY = System.getenv("GOOGLE_API_KEY");
+    	API_URL = System.getenv("GOOGLE_API_URL");
+    }
 
+	@SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {		
 		ServletContext context = getServletContext();
 		
@@ -77,7 +76,6 @@ public class Geocoding extends BaseServlet {
 		for (Agency agency: agencyList) {
 			JSONObject agencyJSON = new JSONObject();
 			
-			JSONParser parser = new JSONParser();
 			JSONObject result = null;
 			
 			try {
@@ -112,7 +110,6 @@ public class Geocoding extends BaseServlet {
 		resultJSON.put("results", resultArray);
 		
 		out.print(resultJSON.toJSONString());
-		System.out.println(resultJSON.toJSONString());
 	}
 	
 	private JSONObject getGeocodingResult (String address) throws MalformedURLException {

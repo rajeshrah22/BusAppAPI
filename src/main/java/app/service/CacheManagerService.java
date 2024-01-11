@@ -12,6 +12,7 @@ import org.json.simple.JSONObject;
 //local imports
 import app.exceptions.CacheInitializationException;
 
+@SuppressWarnings("rawtypes")
 public class CacheManagerService{
 	private CacheManager cacheManager;
 	private static int instanceCount = 0;

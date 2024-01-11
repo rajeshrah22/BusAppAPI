@@ -1,12 +1,8 @@
 package app.service;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
-
-import java.net.URL;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
@@ -22,6 +18,7 @@ import org.json.simple.JSONObject;
 import app.model.Agency;
 import app.model.Route;
 
+@SuppressWarnings("unchecked")
 public class XmlApiService {
 
     private XMLInputFactory xmlInputFactory;
@@ -128,7 +125,6 @@ public class XmlApiService {
 			JSONArray pathArray = new JSONArray();
 			
 			while(reader.hasNext()) {
-				System.out.println("route Config while loop started");
 				XMLEvent nextEvent = reader.nextEvent();
 				if (nextEvent.isStartElement()) {
 					StartElement startElm = nextEvent.asStartElement();
@@ -185,7 +181,6 @@ public class XmlApiService {
 							String title = startElm.getAttributeByName(new QName("title")).getValue();
 							String tag = startElm.getAttributeByName(new QName("tag")).getValue();
 							
-							System.out.println("test: " + tag);							
 							//reads in the stops in the direction
 							while(true) {
 								XMLEvent element = reader.nextEvent();
